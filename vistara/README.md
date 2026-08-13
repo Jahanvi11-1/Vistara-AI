@@ -4,12 +4,12 @@ AI-powered contract analysis tool that helps users understand legal documents in
 
 ## Overview
 
-Vistara is a cross-platform mobile and desktop application built with Flutter that analyzes contracts and legal documents to identify potential risks. It uses AI to break down complex legal language into plain English explanations and worst-case scenarios, empowering users to make informed decisions.
+Vistara is a cross-platform mobile and desktop application built with Flutter that analyzes contracts and legal documents to identify potential risks. It uses Google Gemini AI to break down complex legal language into plain English explanations and worst-case scenarios, empowering users to make informed decisions.
 
 ## Features
 
 - **Document Upload**: Support for PDF and text file uploads
-- **AI Analysis**: OpenAI-powered contract risk assessment
+- **AI Analysis**: Google Gemini-powered contract risk assessment
 - **Risk Classification**: Categorizes clauses by severity (High, Medium, Low)
 - **Plain Language Explanations**: Translates legalese into understandable terms
 - **Worst-Case Scenarios**: Shows potential consequences of risky clauses
@@ -31,7 +31,7 @@ Vistara is a cross-platform mobile and desktop application built with Flutter th
 
 ### Backend (Python)
 - **Framework**: FastAPI
-- **AI Integration**: GEMINI API KEY
+- **AI Integration**: Google Gemini API (`gemini-2.5-flash`)
 - **PDF Processing**: pdfplumber
 - **API Documentation**: Auto-generated with FastAPI
 - **CORS**: Enabled for local development
@@ -66,7 +66,7 @@ vistara-backend/
 
 - Flutter SDK 3.13 or higher
 - Python 3.10+ (for backend)
-- OpenAI API key
+- Google Gemini API key ([Get one here](https://aistudio.google.com/app/apikey))
 
 ### Frontend Setup
 
@@ -80,8 +80,18 @@ flutter run
 
 ```bash
 cd vistara-backend
-pip install fastapi uvicorn openai pdfplumber python-multipart
-export OPENAI_API_KEY=your_api_key_here
+pip install fastapi uvicorn google-generativeai pdfplumber python-multipart python-dotenv
+```
+
+Create a `.env` file in the `vistara-backend` directory:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+Then start the server:
+
+```bash
 uvicorn main:app --reload
 ```
 
@@ -103,20 +113,26 @@ flutter run -d chrome
 
 ## API Endpoints
 
+### GET `/`
+
+Health check — returns API status.
+
 ### POST `/analyze`
 
-Analyzes a contract document and returns risk assessment.
+Analyzes a contract document and returns a risk assessment using Google Gemini AI.
 
-**Parameters:**
+**Query Parameters:**
+- `mock` (optional, bool): Return sample data without making an API call (useful for testing)
+
+**Body Parameters (multipart/form-data):**
 - `file` (optional): PDF or text file upload
 - `text` (optional): Raw contract text
-- `mock` (optional): Boolean to return mock data
 
 **Response:**
 ```json
 {
   "filename": "string",
-  "overall_score": 0-100,
+  "overall_score": 0,
   "risk_level": "High|Medium|Low",
   "high_risk_count": 0,
   "medium_risk_count": 0,
@@ -132,6 +148,8 @@ Analyzes a contract document and returns risk assessment.
   ]
 }
 ```
+
+> `overall_score` ranges from 0 (extremely hazardous) to 100 (completely safe).
 
 ## Development
 
@@ -171,9 +189,10 @@ flutter build web
 ### Python Packages
 - `fastapi` - Web framework
 - `uvicorn` - ASGI server
-- `openai` - AI integration
+- `google-generativeai` - Google Gemini AI integration
 - `pdfplumber` - PDF text extraction
 - `pydantic` - Data validation
+- `python-dotenv` - Environment variable management
 
 ## License
 
@@ -189,3 +208,7 @@ For help with Flutter development:
 - [Flutter Documentation](https://docs.flutter.dev/)
 - [Flutter API Reference](https://api.flutter.dev/)
 - [Dart Language Tour](https://dart.dev/language)
+
+For help with Google Gemini:
+- [Gemini API Documentation](https://ai.google.dev/gemini-api/docs)
+- [Google AI Studio](https://aistudio.google.com/)
