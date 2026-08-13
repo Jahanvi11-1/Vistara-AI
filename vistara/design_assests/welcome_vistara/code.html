@@ -1,0 +1,194 @@
+<!DOCTYPE html><html class="light" lang="en" style="width: 390px; height: 990px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Vistara - Welcome</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f3eff4",
+                        "tertiary-fixed-dim": "#cfc2d7",
+                        "on-primary-container": "#603a00",
+                        "tertiary-container": "#b8abc0",
+                        "error-container": "#ffdad6",
+                        "background": "#fcf8fd",
+                        "secondary-fixed-dim": "#d0c0e1",
+                        "on-primary-fixed": "#2a1700",
+                        "inverse-surface": "#313034",
+                        "surface-tint": "#83540c",
+                        "surface-container-highest": "#e5e1e6",
+                        "inverse-primary": "#fabb6c",
+                        "surface-bright": "#fcf8fd",
+                        "on-background": "#1c1b1f",
+                        "surface-dim": "#dcd9de",
+                        "primary-fixed-dim": "#fabb6c",
+                        "on-surface": "#1c1b1f",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ecddf4",
+                        "secondary-container": "#eddcfe",
+                        "surface-container-high": "#ebe7ec",
+                        "on-primary-fixed-variant": "#653e00",
+                        "tertiary": "#655a6d",
+                        "outline-variant": "#d5c4b3",
+                        "on-secondary-container": "#6c5f7c",
+                        "primary": "#83540c",
+                        "primary-container": "#e0a458",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffddb8",
+                        "surface-variant": "#e5e1e6",
+                        "on-secondary-fixed-variant": "#4d425d",
+                        "on-tertiary-container": "#483f51",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "outline": "#837566",
+                        "on-secondary-fixed": "#21172f",
+                        "secondary-fixed": "#eddcfe",
+                        "on-tertiary-fixed": "#201828",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#4d4355",
+                        "surface": "#fcf8fd",
+                        "surface-container-low": "#f6f2f7",
+                        "on-surface-variant": "#504538",
+                        "secondary": "#655975",
+                        "surface-container": "#f0edf2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "xxl": "48px",
+                        "margin-desktop": "40px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "title-lg": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            font-family: 'Be Vietnam Pro', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- TopAppBar (From JSON, modified for onboarding context) -->
+<!-- Note: Leading menu icon is suppressed logically as this is a linear onboarding screen without a global nav state yet, 
+         but we keep the structural frame for brand presence -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface-dim flat no-shadows flex items-center justify-center px-margin-mobile h-16 md:px-margin-desktop z-50 transition-all duration-300">
+<!-- Centered Brand Logo per JSON specs (small_center_aligned) -->
+<div class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim md:font-display-lg md:text-display-lg tracking-tighter">
+            VISTARA
+        </div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop py-xxl relative z-10 w-full max-w-screen-xl mx-auto">
+<div class="grid grid-cols-4 md:grid-cols-12 gap-gutter w-full max-w-5xl items-center">
+<!-- Graphic / Tactile Accent Container -->
+<div class="col-span-4 md:col-span-6 md:order-last flex justify-center mb-xl md:mb-0 relative">
+<!-- Atmospheric layered paper effect via CSS -->
+<div class="absolute inset-0 bg-surface-variant/20 rounded-[2rem] transform rotate-3 scale-105 transition-transform duration-700 ease-out"></div>
+<div class="absolute inset-0 bg-surface-container-low rounded-[2rem] transform -rotate-2 scale-105 shadow-[0_12px_32px_rgba(62,53,70,0.04)] transition-transform duration-700 ease-out"></div>
+<div class="relative w-full aspect-square max-w-sm rounded-[2rem] overflow-hidden shadow-[0_12px_32px_rgba(62,53,70,0.08)] border border-outline-variant/30 bg-surface">
+<img class="w-full h-full object-cover" data-alt="A sophisticated, minimalist 3D rendering of abstract geometric paper-like planes layering over each other. The color palette features pristine Lilac White surfaces shifting into soft Lavender Gray shadows, with a single, precise geometric sphere in vibrant Ochre Amber resting on the top layer. The lighting is soft, studio-quality, casting highly diffused, atmospheric shadows that emphasize depth and clarity. The mood is calm, authoritative, and deeply analytical, perfectly capturing a premium editorial SaaS aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHZsnATq5oPL2luNbdjpeRnQeQiixGbM58LauPV0xcWizbA6UiC5qAe02Da7VlmpoqTyxvWkgxO15TOhGmFCw7a4c8_CyhMfhVpMpqexRyC0cotR19bCGMo8VwoA8p0QEyNq3vauOOZbEf18qhepwSNmh0L0wgRcnj9Dm6EKndF8uLEg50s99iDV69Xa2spEv6oxs4w202NGxMEXHH9qbRgPw9FcCCm5053xHgj7XAf0eXUjft5qQ">
+</div>
+</div>
+<!-- Typography & Action Area -->
+<div class="col-span-4 md:col-span-6 flex flex-col items-center md:items-start text-center md:text-left z-10">
+<!-- Heading -->
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg text-inverse-surface mb-lg max-w-[15ch]">
+                    Understand before you agree.
+                </h1>
+<!-- Supporting Text -->
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-xxl max-w-md">
+                    Vistara identifies potentially risky terms, explains them in plain language, and helps you understand what deserves your attention.
+                </p>
+<!-- Call to Action Cluster -->
+<div class="w-full flex flex-col items-center md:items-start gap-md">
+<!-- Primary Button -->
+<button class="w-full md:w-auto min-w-[200px] bg-primary text-on-primary font-label-md text-label-md py-4 px-8 rounded-full shadow-sm hover:opacity-80 transition-opacity active:scale-95 duration-150 flex items-center justify-center gap-2 group">
+                        Get Started
+                        <span class="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-1" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+</button>
+<!-- Secondary Context -->
+<span class="font-body-sm text-body-sm text-on-surface-variant opacity-80">
+                        No account required
+                    </span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer / Disclaimer Area -->
+<footer class="w-full py-lg px-margin-mobile flex justify-center mt-auto z-10 bg-gradient-to-t from-surface-container-low to-transparent">
+<p class="font-body-sm text-body-sm text-outline flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">info</span>
+            AI-powered risk analysis. Not legal advice.
+        </p>
+</footer>
+<!-- Initial Animation Script for smooth entry -->
+<script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const elements = document.querySelectorAll('h1, p, button, .relative.w-full.aspect-square');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 150 + (index * 100));
+            });
+        });
+    </script>
+<div id="snapdom-sandbox" data-snapdom-sandbox="true" aria-hidden="true" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>

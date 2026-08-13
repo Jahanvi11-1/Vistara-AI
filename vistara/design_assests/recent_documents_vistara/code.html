@@ -1,0 +1,368 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Vistara - Recent Documents</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#f3eff4",
+                      "tertiary-fixed-dim": "#cfc2d7",
+                      "on-primary-container": "#603a00",
+                      "tertiary-container": "#b8abc0",
+                      "error-container": "#ffdad6",
+                      "background": "#fcf8fd",
+                      "secondary-fixed-dim": "#d0c0e1",
+                      "on-primary-fixed": "#2a1700",
+                      "inverse-surface": "#313034",
+                      "surface-tint": "#83540c",
+                      "surface-container-highest": "#e5e1e6",
+                      "inverse-primary": "#fabb6c",
+                      "surface-bright": "#fcf8fd",
+                      "on-background": "#1c1b1f",
+                      "surface-dim": "#dcd9de",
+                      "primary-fixed-dim": "#fabb6c",
+                      "on-surface": "#1c1b1f",
+                      "on-primary": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#ecddf4",
+                      "secondary-container": "#eddcfe",
+                      "surface-container-high": "#ebe7ec",
+                      "on-primary-fixed-variant": "#653e00",
+                      "tertiary": "#655a6d",
+                      "outline-variant": "#d5c4b3",
+                      "on-secondary-container": "#6c5f7c",
+                      "primary": "#83540c",
+                      "primary-container": "#e0a458",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#ffddb8",
+                      "surface-variant": "#e5e1e6",
+                      "on-secondary-fixed-variant": "#4d425d",
+                      "on-tertiary-container": "#483f51",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "outline": "#837566",
+                      "on-secondary-fixed": "#21172f",
+                      "secondary-fixed": "#eddcfe",
+                      "on-tertiary-fixed": "#201828",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed-variant": "#4d4355",
+                      "surface": "#fcf8fd",
+                      "surface-container-low": "#f6f2f7",
+                      "on-surface-variant": "#504538",
+                      "secondary": "#655975",
+                      "surface-container": "#f0edf2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "gutter": "24px",
+                      "xxl": "48px",
+                      "margin-desktop": "40px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-lg": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "title-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      }
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+          font-variation-settings: 'FILL' 1;
+        }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface-dim z-40">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full">
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-150 p-2 -ml-2 rounded-full hover:bg-surface-container-highest">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-display-lg text-display-lg tracking-tighter text-primary dark:text-primary-fixed-dim text-center flex-1">VISTARA</h1>
+<div class="w-10"></div> <!-- Spacer for center alignment -->
+</div>
+</header>
+<main class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop py-lg">
+<!-- Page Header & Search -->
+<div class="mb-xl">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-lg">Recent Documents</h2>
+<div class="relative mb-md group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-low border border-surface-variant text-on-surface font-body-md text-body-md rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Search documents..." type="text">
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-sm overflow-x-auto pb-2 scrollbar-hide -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-tertiary-container text-on-tertiary-container font-label-md text-label-md border border-transparent transition-all hover:opacity-90">All</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label-md text-label-md border border-surface-variant hover:bg-surface-variant transition-all">High Risk</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label-md text-label-md border border-surface-variant hover:bg-surface-variant transition-all">Medium Risk</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label-md text-label-md border border-surface-variant hover:bg-surface-variant transition-all">Low Risk</button>
+</div>
+</div>
+<!-- Document List -->
+<div class="space-y-4">
+<!-- Card 1 -->
+<div class="bg-surface-container-low rounded-[16px] p-lg border border-surface-variant hover:shadow-[0_12px_32px_rgba(62,53,70,0.08)] transition-all group relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+<!-- Highlight active/risk bar -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error rounded-r-full"></div>
+<div class="flex-1 pl-2">
+<div class="flex items-start justify-between md:justify-start gap-4 mb-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Apartment Lease</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Today</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-6 pl-2 md:pl-0 border-t border-surface-variant pt-4 md:border-none md:pt-0">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-error/10 text-error font-label-md text-label-md">
+                            Risk: 78/100
+                        </span>
+</div>
+<button aria-label="Delete document" class="p-2 rounded-full text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-low rounded-[16px] p-lg border border-surface-variant hover:shadow-[0_12px_32px_rgba(62,53,70,0.08)] transition-all group relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"></div>
+<div class="flex-1 pl-2">
+<div class="flex items-start justify-between md:justify-start gap-4 mb-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Freelance Agreement</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Yesterday</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-6 pl-2 md:pl-0 border-t border-surface-variant pt-4 md:border-none md:pt-0">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-primary/10 text-primary font-label-md text-label-md">
+                            Risk: 62/100
+                        </span>
+</div>
+<button aria-label="Delete document" class="p-2 rounded-full text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-low rounded-[16px] p-lg border border-surface-variant hover:shadow-[0_12px_32px_rgba(62,53,70,0.08)] transition-all group relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full opacity-60"></div>
+<div class="flex-1 pl-2">
+<div class="flex items-start justify-between md:justify-start gap-4 mb-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Student Loan Agreement</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Aug 10</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-6 pl-2 md:pl-0 border-t border-surface-variant pt-4 md:border-none md:pt-0">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-primary/10 text-primary font-label-md text-label-md opacity-80">
+                            Risk: 71/100
+                        </span>
+</div>
+<button aria-label="Delete document" class="p-2 rounded-full text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface dark:bg-surface-dim shadow-[0_-4px_24px_rgba(62,53,70,0.04)] rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-200 w-16 rounded-xl">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-200 w-16 rounded-xl">
+<span class="material-symbols-outlined mb-1">document_scanner</span>
+<span class="font-label-md text-label-md">Analyze</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim border-t-2 border-primary pt-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-200 w-16 rounded-xl bg-surface-container-low">
+<span class="material-symbols-outlined mb-1" data-weight="fill">history</span>
+<span class="font-label-md text-label-md">Recent</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-200 w-16 rounded-xl">
+<span class="material-symbols-outlined mb-1">analytics</span>
+<span class="font-label-md text-label-md">Reports</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-200 w-16 rounded-xl">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</nav>
+<!-- Desktop SideNav (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col fixed left-0 top-16 bottom-0 w-64 bg-surface dark:bg-surface-dim border-r border-surface-variant pt-8 px-4 z-30">
+<div class="space-y-2">
+<button class="flex items-center gap-4 w-full px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-md text-body-md">
+<span class="material-symbols-outlined">home</span>
+                Home
+            </button>
+<button class="flex items-center gap-4 w-full px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-md text-body-md">
+<span class="material-symbols-outlined">document_scanner</span>
+                Analyze
+            </button>
+<button class="flex items-center gap-4 w-full px-4 py-3 rounded-xl bg-tertiary-container text-on-tertiary-container transition-colors font-body-md text-body-md relative overflow-hidden">
+<div class="absolute left-0 top-2 bottom-2 w-1 bg-primary rounded-r-full"></div>
+<span class="material-symbols-outlined" data-weight="fill">history</span>
+                Recent
+            </button>
+<button class="flex items-center gap-4 w-full px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-md text-body-md">
+<span class="material-symbols-outlined">analytics</span>
+                Reports
+            </button>
+<div class="h-px bg-surface-variant my-4 w-full"></div>
+<button class="flex items-center gap-4 w-full px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-md text-body-md">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </button>
+</div>
+</nav>
+<!-- Adjust main content margin for desktop sidenav -->
+<style>
+        @media (min-width: 768px) {
+            main {
+                margin-left: 16rem;
+                max-width: calc(100% - 16rem);
+            }
+        }
+    </style>
+</body></html>

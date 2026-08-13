@@ -1,0 +1,325 @@
+<!DOCTYPE html><html class="h-full" lang="en" style="width: 390px; height: 884px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>What Could Happen?</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#f3eff4",
+                      "tertiary-fixed-dim": "#cfc2d7",
+                      "on-primary-container": "#603a00",
+                      "tertiary-container": "#b8abc0",
+                      "error-container": "#ffdad6",
+                      "background": "#fcf8fd",
+                      "secondary-fixed-dim": "#d0c0e1",
+                      "on-primary-fixed": "#2a1700",
+                      "inverse-surface": "#313034",
+                      "surface-tint": "#83540c",
+                      "surface-container-highest": "#e5e1e6",
+                      "inverse-primary": "#fabb6c",
+                      "surface-bright": "#fcf8fd",
+                      "on-background": "#1c1b1f",
+                      "surface-dim": "#dcd9de",
+                      "primary-fixed-dim": "#fabb6c",
+                      "on-surface": "#1c1b1f",
+                      "on-primary": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#ecddf4",
+                      "secondary-container": "#eddcfe",
+                      "surface-container-high": "#ebe7ec",
+                      "on-primary-fixed-variant": "#653e00",
+                      "tertiary": "#655a6d",
+                      "outline-variant": "#d5c4b3",
+                      "on-secondary-container": "#6c5f7c",
+                      "primary": "#83540c",
+                      "primary-container": "#e0a458",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#ffddb8",
+                      "surface-variant": "#e5e1e6",
+                      "on-secondary-fixed-variant": "#4d425d",
+                      "on-tertiary-container": "#483f51",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "outline": "#837566",
+                      "on-secondary-fixed": "#21172f",
+                      "secondary-fixed": "#eddcfe",
+                      "on-tertiary-fixed": "#201828",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed-variant": "#4d4355",
+                      "surface": "#fcf8fd",
+                      "surface-container-low": "#f6f2f7",
+                      "on-surface-variant": "#504538",
+                      "secondary": "#655975",
+                      "surface-container": "#f0edf2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "gutter": "24px",
+                      "xxl": "48px",
+                      "margin-desktop": "40px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-lg": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "title-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-full overflow-hidden font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Document (Blurred/Overlay Context) -->
+<div class="absolute inset-0 z-0 bg-surface-container opacity-80 backdrop-blur-sm flex justify-center pt-24 pb-32 px-4 overflow-y-auto">
+<div class="max-w-3xl w-full space-y-6 opacity-30 select-none pointer-events-none">
+<div class="h-8 bg-on-surface-variant rounded w-3/4 mb-12"></div>
+<div class="space-y-3">
+<div class="h-4 bg-on-surface-variant rounded w-full"></div>
+<div class="h-4 bg-on-surface-variant rounded w-full"></div>
+<div class="h-4 bg-on-surface-variant rounded w-11/12"></div>
+<div class="h-4 bg-on-surface-variant rounded w-full"></div>
+<div class="h-4 bg-on-surface-variant rounded w-4/5"></div>
+</div>
+<div class="space-y-3 pt-6">
+<div class="h-4 bg-on-surface-variant rounded w-full"></div>
+<div class="h-4 bg-on-surface-variant rounded w-full"></div>
+<div class="h-4 bg-on-surface-variant rounded w-10/12"></div>
+<div class="h-4 bg-primary rounded w-full"></div> <!-- Highlighted clause context -->
+<div class="h-4 bg-primary rounded w-2/3"></div>
+</div>
+<div class="space-y-3 pt-6">
+<div class="h-4 bg-on-surface-variant rounded w-full"></div>
+<div class="h-4 bg-on-surface-variant rounded w-11/12"></div>
+<div class="h-4 bg-on-surface-variant rounded w-full"></div>
+</div>
+</div>
+</div>
+<!-- Top App Bar (From Shared Components) -->
+<header class="w-full top-0 sticky z-40 bg-surface dark:bg-surface-dim flex items-center justify-between px-margin-mobile h-16 w-full">
+<div class="flex items-center gap-4">
+<button aria-label="Menu" class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity active:scale-95 duration-150 p-2 -ml-2 rounded-full hover:bg-surface-container-highest">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-display-lg text-display-lg tracking-tighter text-primary dark:text-primary-fixed-dim">VISTARA</h1>
+</div>
+<div class="flex items-center gap-2">
+<!-- Contextual actions could go here -->
+</div>
+</header>
+<!-- Overlay/Scrim -->
+<div aria-hidden="true" class="fixed inset-0 bg-inverse-surface/40 z-40 transition-opacity"></div>
+<!-- Expanded Bottom Sheet -->
+<div aria-labelledby="modal-headline" aria-modal="true" class="fixed inset-x-0 bottom-0 z-50 transform transition-transform duration-300 ease-out" role="dialog">
+<!-- Sheet Content Container -->
+<div class="bg-surface rounded-t-[32px] shadow-[0_-12px_48px_rgba(62,53,70,0.12)] border-t border-surface-variant/50 flex flex-col max-h-[751px] h-full w-full max-w-4xl mx-auto overflow-hidden">
+<!-- Drag Handle / Header Area -->
+<div class="flex flex-col items-center pt-4 pb-2 px-margin-mobile md:px-margin-desktop sticky top-0 bg-surface/90 backdrop-blur-md z-10 border-b border-surface-container">
+<div class="w-12 h-1.5 bg-outline-variant rounded-full mb-6"></div>
+<div class="w-full flex justify-between items-start mb-2">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface" id="modal-headline">What could happen?</h2>
+<button aria-label="Close sheet" class="p-2 -mr-2 rounded-full text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop py-lg space-y-xl">
+<!-- Scenario Layout -->
+<div class="relative">
+<!-- Vertical connecting line (mobile) / Horizontal (desktop) -->
+<div class="absolute left-[27px] top-12 bottom-12 w-0.5 bg-tertiary-container hidden"></div>
+<div class="flex flex-col md:flex-row gap-lg md:gap-4 relative z-10">
+<!-- Step 1 -->
+<div class="flex-1 flex flex-row md:flex-col gap-md items-start group">
+<div class="w-14 h-14 rounded-2xl bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0 shadow-sm group-hover:border-primary/30 group-hover:bg-primary-container/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-[28px]">description</span>
+</div>
+<div class="flex flex-col flex-1 pt-1 md:pt-0">
+<span class="font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-wider">Step 1</span>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                                    The agreement requires advance notice.
+                                </p>
+</div>
+</div>
+<!-- Arrow Separator -->
+<div class="hidden md:flex items-center justify-center px-2 text-tertiary-container">
+<span class="material-symbols-outlined text-3xl">arrow_forward</span>
+</div>
+<!-- Vertical Arrow Separator (Mobile) -->
+<div class="md:hidden flex items-center justify-start pl-5 py-2 text-tertiary-container">
+<span class="material-symbols-outlined text-2xl">arrow_downward</span>
+</div>
+<!-- Step 2 -->
+<div class="flex-1 flex flex-row md:flex-col gap-md items-start group">
+<div class="w-14 h-14 rounded-2xl bg-error-container/30 border border-error/20 flex items-center justify-center shrink-0 shadow-sm group-hover:border-error/40 transition-colors">
+<span class="material-symbols-outlined text-error text-[28px]">notification_important</span>
+</div>
+<div class="flex flex-col flex-1 pt-1 md:pt-0">
+<span class="font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-wider">Step 2</span>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                                    You forget to provide the notice before the deadline.
+                                </p>
+</div>
+</div>
+<!-- Arrow Separator -->
+<div class="hidden md:flex items-center justify-center px-2 text-tertiary-container">
+<span class="material-symbols-outlined text-3xl">arrow_forward</span>
+</div>
+<!-- Vertical Arrow Separator (Mobile) -->
+<div class="md:hidden flex items-center justify-start pl-5 py-2 text-tertiary-container">
+<span class="material-symbols-outlined text-2xl">arrow_downward</span>
+</div>
+<!-- Step 3 (Outcome) -->
+<div class="flex-1 flex flex-row md:flex-col gap-md items-start group">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container border border-outline-variant flex items-center justify-center shrink-0 shadow-sm group-hover:border-secondary/40 transition-colors">
+<span class="material-symbols-outlined text-on-secondary-container text-[28px]">gavel</span>
+</div>
+<div class="flex flex-col flex-1 pt-1 md:pt-0">
+<span class="font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-wider">Outcome</span>
+<p class="font-body-lg text-body-lg text-on-surface font-medium leading-relaxed">
+                                    The renewal terms described in the agreement may apply.
+                                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Note / Disclaimer -->
+<div class="mt-xl p-md bg-surface-container-low rounded-xl border border-surface-variant flex items-start gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px] shrink-0 mt-0.5">info</span>
+<p class="font-body-sm text-body-sm">
+                        Illustrative scenario based on the analyzed clause.
+                    </p>
+</div>
+<!-- Spacer for bottom nav if visible -->
+<div class="h-8 md:h-0"></div>
+</div>
+</div>
+</div>
+<div id="snapdom-sandbox" data-snapdom-sandbox="true" aria-hidden="true" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>

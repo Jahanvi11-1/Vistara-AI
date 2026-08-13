@@ -1,0 +1,239 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Vistara AI - Analysis Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#655a6d",
+                      "inverse-on-surface": "#f3eff4",
+                      "on-background": "#1c1b1f",
+                      "on-surface": "#1c1b1f",
+                      "primary-fixed-dim": "#fabb6c",
+                      "secondary-fixed": "#eddcfe",
+                      "background": "#fcf8fd",
+                      "surface-bright": "#fcf8fd",
+                      "on-surface-variant": "#504538",
+                      "on-primary-container": "#603a00",
+                      "on-secondary-fixed-variant": "#4d425d",
+                      "secondary-fixed-dim": "#d0c0e1",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#b8abc0",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#fcf8fd",
+                      "surface-container": "#f0edf2",
+                      "surface-container-high": "#ebe7ec",
+                      "on-secondary": "#ffffff",
+                      "outline-variant": "#d5c4b3",
+                      "outline": "#837566",
+                      "surface-container-highest": "#e5e1e6",
+                      "surface-variant": "#e5e1e6",
+                      "tertiary-fixed-dim": "#cfc2d7",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary-container": "#e0a458",
+                      "secondary": "#655975",
+                      "on-secondary-container": "#6c5f7c",
+                      "inverse-surface": "#313034",
+                      "on-tertiary-fixed-variant": "#4d4355",
+                      "on-secondary-fixed": "#21172f",
+                      "tertiary-fixed": "#ecddf4",
+                      "on-tertiary-container": "#483f51",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed": "#2a1700",
+                      "secondary-container": "#eddcfe",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed": "#201828",
+                      "surface-tint": "#83540c",
+                      "on-primary-fixed-variant": "#653e00",
+                      "primary-fixed": "#ffddb8",
+                      "surface-container-low": "#f6f2f7",
+                      "surface-dim": "#dcd9de",
+                      "primary": "#83540c",
+                      "inverse-primary": "#fabb6c",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "margin-mobile": "16px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "margin-desktop": "40px",
+                      "xxl": "48px",
+                      "xs": "4px",
+                      "base": "8px",
+                      "gutter": "24px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "title-lg": ["Be Vietnam Pro"],
+                      "display-lg": ["Be Vietnam Pro"],
+                      "body-sm": ["Be Vietnam Pro"],
+                      "body-md": ["Be Vietnam Pro"],
+                      "headline-lg-mobile": ["Be Vietnam Pro"],
+                      "body-lg": ["Be Vietnam Pro"],
+                      "label-md": ["Be Vietnam Pro"],
+                      "headline-lg": ["Be Vietnam Pro"],
+                      "headline-md": ["Be Vietnam Pro"]
+              },
+              "fontSize": {
+                      "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); }
+        .risk-highlight { background-color: rgba(186, 26, 26, 0.15); border-bottom: 2px solid theme('colors.error'); }
+        .risk-highlight.active { background-color: rgba(186, 26, 26, 0.3); }
+        .doc-paper { box-shadow: 0 4px 24px rgba(62, 53, 70, 0.05); }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col font-body-md overflow-hidden">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-lg py-md h-16 z-30 bg-surface border-b border-surface-container-highest shrink-0">
+<div class="flex items-center gap-4">
+<span class="font-title-lg text-title-lg font-black text-primary">Vistara AI</span>
+<div class="h-6 w-px bg-surface-container-highest mx-2 hidden md:block"></div>
+<div class="hidden md:flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">folder</span>
+<span>Standard Apartment Lease.pdf</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-2 transition-all">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-2 transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-2 transition-all">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-tertiary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a person looking directly at the camera. The lighting is soft and flattering, suitable for a corporate profile picture. The background is a muted, abstract office setting, slightly out of focus to keep attention on the subject's face. The overall aesthetic matches a sleek, modern enterprise software application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8XCNzuGkKfgoObR-PuCoDRYwYIMurFkrL09JhSxkcN4Ik-2AMaRaTwbM14T9nPlM3wXEIjRQQhlF5TFwXGfo0Wgj7sWn9AgHmkNIWemNtkc7K3X0bD1yuzrFfLK6g2r3xZXtzXEyEis3NGP-h9EyOEGgmecF0I9IDkKYytX0w8JViqD9_nfKXvo8rf1xDjgZh4FbHQejRlSDkFIG1my9VR8SK1bWN1EmcC6JXQNZdbGb9S6k9tyI">
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<div class="flex flex-1 h-[calc(100vh-64px)] overflow-hidden bg-surface">
+<!-- Document Viewer (Left) -->
+<main class="flex-1 h-full overflow-y-auto bg-surface-container-low p-lg pb-xxl relative">
+<div class="max-w-3xl mx-auto doc-paper bg-surface-container-lowest p-margin-desktop rounded-lg min-h-full">
+<h1 class="font-headline-lg text-headline-lg text-center mb-8 pb-4 border-b border-surface-container-highest">RESIDENTIAL LEASE AGREEMENT</h1>
+<div class="space-y-6 font-body-md text-body-md text-on-surface opacity-90 leading-relaxed">
+<p>THIS LEASE AGREEMENT (hereinafter referred to as the "Agreement") made and entered into this 1st day of October, 2023, by and between Horizon Property Management (hereinafter referred to as "Landlord") and John Doe (hereinafter referred to as "Tenant").</p>
+<h3 class="font-title-lg text-title-lg mt-8 mb-2">1. TERM</h3>
+<p>Landlord leases to Tenant and Tenant leases from Landlord the above described Premises together with any and all appurtenances thereto, for a term of twelve (12) months, such term beginning on November 1, 2023, and ending at 11:59 PM on October 31, 2024.</p>
+<h3 class="font-title-lg text-title-lg mt-8 mb-2">2. RENT</h3>
+<p>The total rent for the term hereof is the sum of Twenty-Four Thousand Dollars ($24,000.00) payable on the 1st day of each month of the term, in equal installments of Two Thousand Dollars ($2,000.00).</p>
+<h3 class="font-title-lg text-title-lg mt-8 mb-2">3. AUTO-RENEWAL AND ESCALATION</h3>
+<p class="risk-highlight active p-1 -m-1 rounded-sm cursor-pointer transition-colors" title="Click to view analysis">
+                        Unless Tenant provides written notice of intent to vacate at least ninety (90) days prior to the expiration of the current term, this Lease shall automatically renew for successive one (1) year terms. Upon each such renewal, the monthly rent shall automatically increase by an amount equal to eight percent (8%) of the rent in effect during the immediately preceding term, without further notice to Tenant.
+                    </p>
+<h3 class="font-title-lg text-title-lg mt-8 mb-2">4. MAINTENANCE AND REPAIR</h3>
+<p>Tenant will, at its sole expense, keep and maintain the Premises and appurtenances in good and sanitary condition and repair during the term of this Agreement and any renewal thereof.</p>
+<h3 class="font-title-lg text-title-lg mt-8 mb-2">5. EARLY TERMINATION</h3>
+<p>
+                        In the event Tenant terminates this Agreement prior to the expiration of the term, <span class="risk-highlight px-1 rounded-sm cursor-pointer" title="High penalty fee">Tenant shall be liable for an early termination fee equal to three (3) months' rent</span>, in addition to any unpaid rent through the date of termination.
+                     </p>
+</div>
+</div>
+</main>
+<!-- Analysis Panel (Right) -->
+<aside class="w-96 flex-shrink-0 h-full bg-surface border-l border-surface-container-highest flex flex-col overflow-hidden">
+<!-- Panel Header -->
+<div class="p-lg border-b border-surface-container-highest bg-surface-bright">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-title-lg text-title-lg font-semibold">Document Analysis</h2>
+<span class="px-2 py-1 bg-error-container text-on-error-container font-label-md text-label-md rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                        High Risk
+                    </span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-display-lg text-display-lg text-error">78</span>
+<span class="font-body-md text-body-md text-on-surface-variant pb-2">/ 100 Risk Score</span>
+</div>
+</div>
+<!-- Panel Content -->
+<div class="flex-1 overflow-y-auto p-lg space-y-xl">
+<!-- Active Finding -->
+<div class="bg-surface-container p-md rounded-lg border border-primary-fixed-dim shadow-sm">
+<div class="flex items-start gap-3 mb-3">
+<span class="material-symbols-outlined text-error mt-1" style="font-variation-settings: 'FILL' 1;">error</span>
+<div>
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Auto-Renewal &amp; Aggressive Escalation</h3>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mt-1">Clause 3</p>
+</div>
+</div>
+<div class="space-y-4 mt-4">
+<div>
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface mb-1">What does this mean?</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">If you forget to cancel 90 days early, you are locked in for another year automatically, and your rent goes up by 8%.</p>
+</div>
+<div>
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface mb-1">Why is it risky?</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">90 days is an unusually long notice period (30-60 is standard). An 8% automatic increase outpaces typical inflation and local rent control guidelines.</p>
+</div>
+<button class="w-full mt-2 py-2 px-4 bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors rounded-full font-label-md text-label-md flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+                            See What Could Happen
+                        </button>
+</div>
+</div>
+<!-- Other Findings List -->
+<div>
+<h3 class="font-title-lg text-title-lg mb-4 text-on-surface">Other Top Findings</h3>
+<ul class="space-y-3">
+<li class="flex items-start gap-3 p-3 hover:bg-surface-container rounded-lg cursor-pointer transition-colors border border-transparent hover:border-surface-container-highest">
+<span class="material-symbols-outlined text-error mt-0.5">warning</span>
+<div>
+<span class="font-body-sm text-body-sm font-semibold block">Severe Early Termination Penalty</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Clause 5 • High Risk</span>
+</div>
+</li>
+<li class="flex items-start gap-3 p-3 hover:bg-surface-container rounded-lg cursor-pointer transition-colors border border-transparent hover:border-surface-container-highest">
+<span class="material-symbols-outlined text-primary mt-0.5">info</span>
+<div>
+<span class="font-body-sm text-body-sm font-semibold block">Vague Maintenance Obligations</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Clause 4 • Medium Risk</span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Panel Footer Actions -->
+<div class="p-4 border-t border-surface-container-highest bg-surface-bright flex gap-3">
+<button class="flex-1 py-2 px-4 border border-outline text-on-surface hover:bg-surface-container rounded-full font-label-md text-label-md transition-colors text-center">
+                    Export Report
+                </button>
+<button class="flex-1 py-2 px-4 bg-tertiary text-on-tertiary hover:bg-tertiary-container hover:text-on-tertiary-container rounded-full font-label-md text-label-md transition-colors text-center">
+                    Draft Addendum
+                </button>
+</div>
+</aside>
+</div>
+</body></html>

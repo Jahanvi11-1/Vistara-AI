@@ -1,0 +1,479 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VISTARA - Contract Risk Report</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Design System -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#f3eff4",
+                    "tertiary-fixed-dim": "#cfc2d7",
+                    "on-primary-container": "#603a00",
+                    "tertiary-container": "#b8abc0",
+                    "error-container": "#ffdad6",
+                    "background": "#fcf8fd",
+                    "secondary-fixed-dim": "#d0c0e1",
+                    "on-primary-fixed": "#2a1700",
+                    "inverse-surface": "#313034",
+                    "surface-tint": "#83540c",
+                    "surface-container-highest": "#e5e1e6",
+                    "inverse-primary": "#fabb6c",
+                    "surface-bright": "#fcf8fd",
+                    "on-background": "#1c1b1f",
+                    "surface-dim": "#dcd9de",
+                    "primary-fixed-dim": "#fabb6c",
+                    "on-surface": "#1c1b1f",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ecddf4",
+                    "secondary-container": "#eddcfe",
+                    "surface-container-high": "#ebe7ec",
+                    "on-primary-fixed-variant": "#653e00",
+                    "tertiary": "#655a6d",
+                    "outline-variant": "#d5c4b3",
+                    "on-secondary-container": "#6c5f7c",
+                    "primary": "#83540c",
+                    "primary-container": "#e0a458",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#ffddb8",
+                    "surface-variant": "#e5e1e6",
+                    "on-secondary-fixed-variant": "#4d425d",
+                    "on-tertiary-container": "#483f51",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "outline": "#837566",
+                    "on-secondary-fixed": "#21172f",
+                    "secondary-fixed": "#eddcfe",
+                    "on-tertiary-fixed": "#201828",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#4d4355",
+                    "surface": "#fcf8fd",
+                    "surface-container-low": "#f6f2f7",
+                    "on-surface-variant": "#504538",
+                    "secondary": "#655975",
+                    "surface-container": "#f0edf2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "gutter": "24px",
+                    "xxl": "48px",
+                    "margin-desktop": "40px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "label-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "title-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-sm": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-lg-mobile": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-lg": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {
+                    "label-md": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "title-lg": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "36px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for an editorial feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fcf8fd; /* surface */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dcd9de; /* surface-dim */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b8abc0; /* tertiary-container */
+        }
+        
+        /* Subtle tactile line background */
+        .bg-tactile-lines {
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 7px,
+                rgba(184, 169, 192, 0.05) 7px,
+                rgba(184, 169, 192, 0.05) 8px
+            );
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopAppBar (Generated from Shared Components JSON) -->
+<header class="w-full top-0 sticky z-50 bg-surface dark:bg-surface-dim flat flex items-center justify-between px-margin-mobile h-16 transition-all duration-300 border-b border-surface-variant/50 backdrop-blur-md bg-opacity-90">
+<button class="flex items-center justify-center p-sm text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity active:scale-95 duration-150 rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-display-lg text-[24px] leading-[32px] font-bold tracking-tighter text-primary dark:text-primary-fixed-dim">
+            VISTARA
+        </div>
+<!-- Placeholder for symmetry -->
+<div class="w-10"></div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-xl md:py-xxl bg-tactile-lines">
+<!-- Document Header Area -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-lg mb-xxl">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">article</span>
+                    Contract Risk Report
+                </p>
+<h1 class="font-display-lg text-display-lg text-on-surface">Apartment Lease</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl">
+                    Automated analysis completed on October 24, 2023. We identified critical clauses requiring your attention before signing.
+                </p>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<button class="flex items-center justify-center gap-xs px-lg py-3 rounded-lg border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]">share</span>
+                    Share
+                </button>
+<button class="flex items-center justify-center gap-xs px-lg py-3 rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:bg-surface-tint shadow-[0_4px_12px_rgba(131,84,12,0.15)] transition-all active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">download</span>
+                    Download PDF
+                </button>
+</div>
+</div>
+<!-- Bento Grid: Score & Breakdown -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg mb-xxl">
+<!-- Overall Score (Span 5) -->
+<div class="md:col-span-5 bg-surface-container-low rounded-[24px] p-xl border border-surface-variant/30 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors duration-500"></div>
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface mb-xs">Safety Score</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Based on standard tenant protections.</p>
+</div>
+<div class="mt-lg flex items-baseline gap-xs">
+<span class="font-display-lg text-[72px] leading-[72px] font-bold text-primary tracking-tighter">78</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant">/100</span>
+</div>
+<!-- Score Bar -->
+<div class="w-full h-2 bg-surface-variant rounded-full mt-lg overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[78%]"></div>
+</div>
+</div>
+<!-- Risk Breakdown (Span 7) -->
+<div class="md:col-span-7 bg-surface-container-low rounded-[24px] p-xl border border-surface-variant/30 flex flex-col justify-center">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-lg">Risk Breakdown</h2>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+<!-- High Risk -->
+<div class="bg-surface rounded-xl p-md border border-error-container/50 hover:shadow-[0_8px_24px_rgba(186,26,26,0.05)] transition-shadow">
+<div class="flex items-center gap-sm mb-sm">
+<span class="w-3 h-3 rounded-full bg-error"></span>
+<span class="font-label-md text-label-md text-on-surface">HIGH RISK</span>
+</div>
+<div class="font-display-lg text-display-lg text-error">3</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Requires immediate review</p>
+</div>
+<!-- Medium Risk -->
+<div class="bg-surface rounded-xl p-md border border-primary-container/50 hover:shadow-[0_8px_24px_rgba(224,164,88,0.05)] transition-shadow">
+<div class="flex items-center gap-sm mb-sm">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="font-label-md text-label-md text-on-surface">MEDIUM RISK</span>
+</div>
+<div class="font-display-lg text-display-lg text-primary">5</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Standard but notable</p>
+</div>
+<!-- Low Risk -->
+<div class="bg-surface rounded-xl p-md border border-tertiary-container/50 hover:shadow-[0_8px_24px_rgba(184,171,192,0.05)] transition-shadow">
+<div class="flex items-center gap-sm mb-sm">
+<span class="w-3 h-3 rounded-full bg-tertiary-container"></span>
+<span class="font-label-md text-label-md text-on-surface">LOW RISK</span>
+</div>
+<div class="font-display-lg text-display-lg text-tertiary">14</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Standard boilerplate</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Top Risks Section -->
+<div class="mt-xxl">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-[32px] text-error">warning</span>
+                Top Risks Identified
+            </h2>
+<div class="flex flex-col gap-lg">
+<!-- Risk Card 1: Auto-Renewal -->
+<article class="bg-surface-container-low rounded-[24px] border border-surface-variant/50 overflow-hidden">
+<!-- Header -->
+<div class="px-xl py-lg border-b border-surface-variant flex flex-col md:flex-row md:items-center justify-between gap-md bg-surface/50">
+<div class="flex items-center gap-md">
+<div class="px-sm py-1 bg-error-container text-on-error-container font-label-md text-label-md rounded-full flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span> High Risk
+                            </div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Auto-Renewal</h3>
+</div>
+<div class="font-label-md text-label-md text-on-surface-variant bg-surface px-md py-xs rounded-lg border border-surface-variant">
+                            Page 4, Section 12.b
+                        </div>
+</div>
+<!-- Content Grid -->
+<div class="p-xl grid grid-cols-1 md:grid-cols-12 gap-xl">
+<!-- Left: Original Text (Editorial styling) -->
+<div class="md:col-span-5 flex flex-col">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-md">Original Clause</h4>
+<div class="bg-surface rounded-xl p-lg border-l-4 border-l-surface-variant text-on-surface-variant font-body-sm text-body-sm italic leading-relaxed">
+                                "Upon expiration of the initial Term, this Agreement shall automatically renew for successive periods of twelve (12) months each, unless either party provides written notice of termination to the other party no less than sixty (60) days prior to the expiration of the then-current Term."
+                            </div>
+</div>
+<!-- Right: Analysis -->
+<div class="md:col-span-7 flex flex-col gap-lg">
+<div>
+<h4 class="font-label-md text-label-md text-primary uppercase tracking-widest mb-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">translate</span> Plain English
+                                </h4>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                                    Your lease will automatically extend for another full year unless you tell them in writing 2 months before it ends.
+                                </p>
+</div>
+<div class="w-full h-[1px] bg-surface-variant/50"></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-xs">Why It Matters</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                        You can easily be locked into a binding 12-month contract if you miss the specific 60-day notification window.
+                                    </p>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-xs">Scenario</h4>
+<p class="font-body-md text-body-md text-on-surface-variant bg-surface-container p-md rounded-lg">
+                                        You plan to move out in July. You forget to send notice by May 1st. You are now legally required to pay rent until next July.
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Risk Card 2: Early Termination -->
+<article class="bg-surface-container-low rounded-[24px] border border-surface-variant/50 overflow-hidden">
+<!-- Header -->
+<div class="px-xl py-lg border-b border-surface-variant flex flex-col md:flex-row md:items-center justify-between gap-md bg-surface/50">
+<div class="flex items-center gap-md">
+<div class="px-sm py-1 bg-error-container text-on-error-container font-label-md text-label-md rounded-full flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span> High Risk
+                            </div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Early Termination Penalties</h3>
+</div>
+<div class="font-label-md text-label-md text-on-surface-variant bg-surface px-md py-xs rounded-lg border border-surface-variant">
+                            Page 6, Section 18
+                        </div>
+</div>
+<!-- Content Grid -->
+<div class="p-xl grid grid-cols-1 md:grid-cols-12 gap-xl">
+<!-- Left: Original Text -->
+<div class="md:col-span-5 flex flex-col">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-md">Original Clause</h4>
+<div class="bg-surface rounded-xl p-lg border-l-4 border-l-surface-variant text-on-surface-variant font-body-sm text-body-sm italic leading-relaxed">
+                                "Tenant may terminate this Lease prior to the Expiration Date provided Tenant pays a termination fee equal to three (3) months Base Rent, plus forfeits the Security Deposit in its entirety as liquidated damages."
+                            </div>
+</div>
+<!-- Right: Analysis -->
+<div class="md:col-span-7 flex flex-col gap-lg">
+<div>
+<h4 class="font-label-md text-label-md text-primary uppercase tracking-widest mb-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">translate</span> Plain English
+                                </h4>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                                    Breaking your lease early will cost you 3 months of rent, plus they keep your entire security deposit.
+                                </p>
+</div>
+<div class="w-full h-[1px] bg-surface-variant/50"></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-xs">Why It Matters</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                        This is a significantly higher penalty than the state average (usually 1-2 months) and represents a severe financial risk.
+                                    </p>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-xs">Scenario</h4>
+<p class="font-body-md text-body-md text-on-surface-variant bg-surface-container p-md rounded-lg">
+                                        You get a new job in another city and need to break the lease 4 months early. You will have to pay thousands of dollars in fees.
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Risk Card 3: Liability Waiver -->
+<article class="bg-surface-container-low rounded-[24px] border border-surface-variant/50 overflow-hidden">
+<!-- Header -->
+<div class="px-xl py-lg border-b border-surface-variant flex flex-col md:flex-row md:items-center justify-between gap-md bg-surface/50">
+<div class="flex items-center gap-md">
+<div class="px-sm py-1 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-full flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Medium Risk
+                            </div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Broad Liability Waiver</h3>
+</div>
+<div class="font-label-md text-label-md text-on-surface-variant bg-surface px-md py-xs rounded-lg border border-surface-variant">
+                            Page 8, Section 22.a
+                        </div>
+</div>
+<!-- Content Grid -->
+<div class="p-xl grid grid-cols-1 md:grid-cols-12 gap-xl">
+<!-- Left: Original Text -->
+<div class="md:col-span-5 flex flex-col">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-md">Original Clause</h4>
+<div class="bg-surface rounded-xl p-lg border-l-4 border-l-surface-variant text-on-surface-variant font-body-sm text-body-sm italic leading-relaxed">
+                                "Landlord shall not be liable for any damage or injury to Tenant, or any other person, or to any property, occurring on the Premises or any part thereof, regardless of the cause..."
+                            </div>
+</div>
+<!-- Right: Analysis -->
+<div class="md:col-span-7 flex flex-col gap-lg">
+<div>
+<h4 class="font-label-md text-label-md text-primary uppercase tracking-widest mb-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">translate</span> Plain English
+                                </h4>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                                    The landlord claims they are not responsible for any injuries or damage that happen in your apartment, even if it's their fault.
+                                </p>
+</div>
+<div class="w-full h-[1px] bg-surface-variant/50"></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-xs">Why It Matters</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                        While often unenforceable in court if the landlord is negligent, it attempts to discourage you from seeking compensation for legitimate damages.
+                                    </p>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-xs">Scenario</h4>
+<p class="font-body-md text-body-md text-on-surface-variant bg-surface-container p-md rounded-lg">
+                                        A poorly maintained pipe bursts, ruining your electronics. The landlord may point to this clause to avoid paying for the damage.
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+</div>
+<!-- Footer / Disclaimer -->
+<footer class="mt-xxl pt-xl border-t border-surface-variant/50">
+<p class="font-body-sm text-body-sm text-tertiary text-center md:text-left max-w-4xl opacity-80 leading-relaxed">
+<strong>Disclaimer:</strong> This Vistara Contract Risk Report is generated using artificial intelligence and natural language processing. It is designed to identify common contractual risks based on standard industry practices. This report does not constitute legal advice, and no attorney-client relationship is formed. You should always consult with a qualified legal professional before signing any legally binding document. Vistara is not responsible for any omissions or inaccuracies in this analysis.
+            </p>
+</footer>
+</main>
+</body></html>

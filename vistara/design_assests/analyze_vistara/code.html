@@ -1,0 +1,268 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Vistara - Analyze</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#f3eff4",
+                      "tertiary-fixed-dim": "#cfc2d7",
+                      "on-primary-container": "#603a00",
+                      "tertiary-container": "#b8abc0",
+                      "error-container": "#ffdad6",
+                      "background": "#fcf8fd",
+                      "secondary-fixed-dim": "#d0c0e1",
+                      "on-primary-fixed": "#2a1700",
+                      "inverse-surface": "#313034",
+                      "surface-tint": "#83540c",
+                      "surface-container-highest": "#e5e1e6",
+                      "inverse-primary": "#fabb6c",
+                      "surface-bright": "#fcf8fd",
+                      "on-background": "#1c1b1f",
+                      "surface-dim": "#dcd9de",
+                      "primary-fixed-dim": "#fabb6c",
+                      "on-surface": "#1c1b1f",
+                      "on-primary": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#ecddf4",
+                      "secondary-container": "#eddcfe",
+                      "surface-container-high": "#ebe7ec",
+                      "on-primary-fixed-variant": "#653e00",
+                      "tertiary": "#655a6d",
+                      "outline-variant": "#d5c4b3",
+                      "on-secondary-container": "#6c5f7c",
+                      "primary": "#83540c",
+                      "primary-container": "#e0a458",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#ffddb8",
+                      "surface-variant": "#e5e1e6",
+                      "on-secondary-fixed-variant": "#4d425d",
+                      "on-tertiary-container": "#483f51",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "outline": "#837566",
+                      "on-secondary-fixed": "#21172f",
+                      "secondary-fixed": "#eddcfe",
+                      "on-tertiary-fixed": "#201828",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed-variant": "#4d4355",
+                      "surface": "#fcf8fd",
+                      "surface-container-low": "#f6f2f7",
+                      "on-surface-variant": "#504538",
+                      "secondary": "#655975",
+                      "surface-container": "#f0edf2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "gutter": "24px",
+                      "xxl": "48px",
+                      "margin-desktop": "40px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-lg": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "title-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24 md:pb-0 font-body-md">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface-dim z-40">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<h1 class="font-display-lg text-display-lg tracking-tighter text-primary dark:text-primary-fixed-dim">VISTARA</h1>
+<div class="w-6"></div> <!-- Spacer for center alignment -->
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop pt-lg pb-xxl">
+<!-- Header Section -->
+<div class="mb-xl">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">Analyze a Document</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Upload a PDF or paste your contract text.</p>
+</div>
+<!-- Layout Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Upload PDF Card -->
+<div class="bg-surface-container-low rounded-xl p-lg border border-tertiary-container shadow-[0_12px_32px_rgba(62,53,70,0.08)] flex flex-col h-full">
+<div class="flex items-center gap-sm mb-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">upload_file</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Upload PDF</h3>
+</div>
+<div class="flex-grow border-2 border-dashed border-outline-variant rounded-lg p-xl flex flex-col items-center justify-center bg-surface hover:bg-surface-container-highest transition-colors cursor-pointer group mb-md">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary mb-sm transition-colors">cloud_upload</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">Drag and drop your file here, or click to browse.</p>
+<p class="font-body-sm text-body-sm text-outline mt-xs text-center">Supported formats: .pdf, .docx (Max 10MB)</p>
+</div>
+<button class="w-full bg-transparent border border-primary text-primary hover:bg-surface-container-highest font-label-md text-label-md py-3 rounded-full transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">folder_open</span>
+                    Browse Files
+                </button>
+</div>
+<!-- Paste Text Card -->
+<div class="bg-surface-container-low rounded-xl p-lg border border-tertiary-container shadow-[0_12px_32px_rgba(62,53,70,0.08)] flex flex-col h-full">
+<div class="flex items-center gap-sm mb-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Paste Text</h3>
+</div>
+<div class="flex-grow mb-md">
+<label class="sr-only" for="contractText">Contract Text</label>
+<textarea class="w-full h-full min-h-[200px] bg-surface border border-outline-variant rounded-lg p-md font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary resize-none placeholder:text-outline" id="contractText" placeholder="Paste your contract text here..."></textarea>
+</div>
+<button class="w-full bg-primary text-on-primary hover:opacity-90 font-label-md text-label-md py-3 rounded-full transition-opacity flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-sm">analytics</span>
+                    Analyze Document
+                </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface dark:bg-surface-dim shadow-[0_-4px_24px_rgba(62,53,70,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 hover:bg-surface-container-low active:scale-90 transition-transform duration-200 group w-16" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">home</span>
+<span class="font-label-md text-[10px] mt-1 group-hover:text-primary transition-colors">Home</span>
+</a>
+<a aria-current="page" class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim border-t-2 border-primary pt-2 active:scale-90 transition-transform duration-200 group w-16" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">document_scanner</span>
+<span class="font-label-md text-[10px] mt-1">Analyze</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 hover:bg-surface-container-low active:scale-90 transition-transform duration-200 group w-16" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">history</span>
+<span class="font-label-md text-[10px] mt-1 group-hover:text-primary transition-colors">Recent</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 hover:bg-surface-container-low active:scale-90 transition-transform duration-200 group w-16" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">analytics</span>
+<span class="font-label-md text-[10px] mt-1 group-hover:text-primary transition-colors">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 hover:bg-surface-container-low active:scale-90 transition-transform duration-200 group w-16" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">settings</span>
+<span class="font-label-md text-[10px] mt-1 group-hover:text-primary transition-colors">Settings</span>
+</a>
+</nav>
+</body></html>

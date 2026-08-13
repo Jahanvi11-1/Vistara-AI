@@ -1,0 +1,381 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Vistara - Contract Risk Platform</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts: Be Vietnam Pro -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#655a6d",
+                        "inverse-on-surface": "#f3eff4",
+                        "on-background": "#1c1b1f",
+                        "on-surface": "#1c1b1f",
+                        "primary-fixed-dim": "#fabb6c",
+                        "secondary-fixed": "#eddcfe",
+                        "background": "#fcf8fd",
+                        "surface-bright": "#fcf8fd",
+                        "on-surface-variant": "#504538",
+                        "on-primary-container": "#603a00",
+                        "on-secondary-fixed-variant": "#4d425d",
+                        "secondary-fixed-dim": "#d0c0e1",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#b8abc0",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#fcf8fd",
+                        "surface-container": "#f0edf2",
+                        "surface-container-high": "#ebe7ec",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#d5c4b3",
+                        "outline": "#837566",
+                        "surface-container-highest": "#e5e1e6",
+                        "surface-variant": "#e5e1e6",
+                        "tertiary-fixed-dim": "#cfc2d7",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-container": "#e0a458",
+                        "secondary": "#655975",
+                        "on-secondary-container": "#6c5f7c",
+                        "inverse-surface": "#313034",
+                        "on-tertiary-fixed-variant": "#4d4355",
+                        "on-secondary-fixed": "#21172f",
+                        "tertiary-fixed": "#ecddf4",
+                        "on-tertiary-container": "#483f51",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#2a1700",
+                        "secondary-container": "#eddcfe",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#201828",
+                        "surface-tint": "#83540c",
+                        "on-primary-fixed-variant": "#653e00",
+                        "primary-fixed": "#ffddb8",
+                        "surface-container-low": "#f6f2f7",
+                        "surface-dim": "#dcd9de",
+                        "primary": "#83540c",
+                        "inverse-primary": "#fabb6c",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "margin-desktop": "40px",
+                        "xxl": "48px",
+                        "xs": "4px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Editorial SaaS Aesthetic Nuances */
+        body {
+            background-color: #F4F0F5; /* Lilac White */
+            color: #3E3546; /* Plum Charcoal proxy */
+        }
+        .text-plum {
+            color: #3E3546;
+        }
+        .bg-lilac {
+            background-color: #F4F0F5;
+        }
+        .bg-lavender {
+            background-color: #B8A9C9;
+        }
+        .border-plum-light {
+            border-color: rgba(62, 53, 70, 0.1);
+        }
+        .shadow-atmospheric {
+            box-shadow: 0 12px 32px rgba(62, 53, 70, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-lg py-md h-16 lg:pl-72 z-30 bg-surface dark:bg-surface-dim flat no shadows fixed docked full-width top-0">
+<div class="flex items-center gap-4 lg:hidden">
+<span class="font-title-lg text-title-lg font-black text-primary dark:text-inverse-primary">Vistara AI</span>
+</div>
+<div class="hidden lg:flex flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-plum-light rounded-full focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-body-sm text-on-surface" placeholder="Search documents..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="notifications" class="p-2 hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full transition-all text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button aria-label="help" class="p-2 hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full transition-all text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<img alt="User Profile" class="w-8 h-8 rounded-full object-cover border border-plum-light" data-alt="A small, circular avatar portrait of a professional woman with a calm demeanor, set against a muted lilac background. The lighting is soft and natural, emphasizing a high-quality, modern light-mode aesthetic suitable for a premium SaaS application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2JuqfDuIKqMH_1m3s8ViVro7mHWO6-ofwMXzPKO5SnFA_BhB29cN7kUJzbgNgRq-gauumzWxNrSBunaSnQ_XpoXLwvE0fhX0nW7Euf4lavuiuvlkKclBo9E8gKJdqscWR6zZ9CqbYxKKFlxxPoCV5Egsvnp1cHXEczUY0rbdwMU0SMOnF-ZEKbBHS2zLHgAhFUinuKR8WPxwD0ibj343_sZebm0d67NYvgREmv9JJpBsEIcQK3zQ">
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-inverse-surface h-screen w-64 hidden lg:flex flex-col fixed left-0 top-0 h-full z-40 flat no shadows border-r border-plum-light">
+<div class="p-lg border-b border-plum-light">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined filled text-xl">gavel</span>
+</div>
+<h1 class="font-title-lg text-title-lg font-bold text-primary dark:text-inverse-primary">Vistara AI</h1>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Contract Risk Platform</p>
+</div>
+<ul class="flex flex-col py-md gap-1 px-4">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-surface border-l-4 border-primary bg-surface-container-high font-bold hover:bg-surface-container-highest" href="#">
+<span class="material-symbols-outlined filled" data-icon="home">home</span>
+<span class="font-body-md">Home</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-surface-variant hover:bg-surface-container-highest border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-surface-variant hover:bg-surface-container-highest border-l-4 border-transparent mt-4" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md">New Analysis</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-surface-variant hover:bg-surface-container-highest border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-body-md">Recent Documents</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-surface-variant hover:bg-surface-container-highest border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-body-md">Reports</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto p-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-surface-variant hover:bg-surface-container-highest border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="lg:pl-64 pt-16 min-h-screen flex flex-col">
+<div class="flex-1 p-margin-mobile md:p-margin-desktop max-w-7xl mx-auto w-full">
+<!-- Hero Section -->
+<section class="mb-xxl max-w-3xl">
+<h1 class="font-display-lg text-display-lg text-plum mb-6 leading-tight">Understand your contract before it becomes a problem.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8 max-w-2xl leading-relaxed">Vistara identifies potentially risky clauses, explains them in plain language, and helps you understand what deserves your attention before you agree.</p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary-container text-on-primary-container px-6 py-3 rounded-lg font-label-md text-label-md transition-transform hover:scale-[0.98] shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">upload_file</span>
+                        Analyze a Document
+                    </button>
+<button class="bg-transparent border border-plum-light text-plum px-6 py-3 rounded-lg font-label-md text-label-md transition-colors hover:bg-surface-container-high flex items-center gap-2">
+                        View Recent Documents
+                    </button>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-xxl">
+<!-- Primary Upload Card (Span 8) -->
+<div class="md:col-span-8 bg-[#B8A9C9]/10 rounded-[16px] p-lg border border-plum-light relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-lowest to-transparent opacity-50 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col h-full min-h-[320px]">
+<h2 class="font-headline-md text-headline-md text-plum mb-6">Analyze your document</h2>
+<div class="flex-1 border-2 border-dashed border-plum-light rounded-xl flex flex-col items-center justify-center p-8 bg-surface-container-lowest/50 hover:bg-surface-container-lowest transition-colors cursor-pointer group-hover:border-primary-container">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">cloud_upload</span>
+</div>
+<p class="font-body-md text-plum font-medium mb-2">Drop your PDF here</p>
+<p class="font-body-sm text-on-surface-variant mb-6 text-center max-w-xs">Supported formats: PDF, DOCX, TXT. Maximum file size: 50MB.</p>
+<div class="flex items-center gap-4 w-full max-w-sm">
+<div class="h-px bg-plum-light flex-1"></div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">or</span>
+<div class="h-px bg-plum-light flex-1"></div>
+</div>
+<button class="mt-6 px-6 py-2 border border-plum-light rounded-lg text-plum font-label-md text-label-md hover:bg-surface-container transition-colors bg-surface-container-lowest">
+                                Paste Text
+                            </button>
+</div>
+</div>
+</div>
+<!-- Recent Activity / Stats (Span 4) -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<!-- Recent Doc Mini Card -->
+<div class="bg-surface-container-lowest rounded-[16px] p-lg border border-plum-light shadow-atmospheric flex-1">
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-title-lg text-title-lg text-plum">Recent Analysis</h3>
+<button class="text-primary hover:text-surface-tint"><span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+</div>
+<ul class="flex flex-col gap-0">
+<li class="py-3 border-b border-plum-light last:border-0 flex items-start gap-3">
+<span class="material-symbols-outlined text-error mt-0.5" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<p class="font-body-sm font-medium text-plum">Non-Disclosure Agreement_v2.pdf</p>
+<p class="font-label-md text-on-surface-variant text-[10px] mt-1">3 HIGH RISK CLAUSES</p>
+</div>
+</li>
+<li class="py-3 border-b border-plum-light last:border-0 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary-container mt-0.5" style="font-variation-settings: 'FILL' 1;">info</span>
+<div>
+<p class="font-body-sm font-medium text-plum">Employment_Contract_2024.docx</p>
+<p class="font-label-md text-on-surface-variant text-[10px] mt-1">1 MEDIUM RISK CLAUSE</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Quick Stats -->
+<div class="bg-primary-container/10 rounded-[16px] p-lg border border-primary-container/30">
+<p class="font-label-md text-primary-fixed-dim mb-2 uppercase">Time Saved</p>
+<p class="font-display-lg text-plum">14<span class="font-title-lg text-on-surface-variant ml-1">hrs</span></p>
+<p class="font-body-sm text-on-surface-variant mt-2">Estimated review time saved this month based on document volume.</p>
+</div>
+</div>
+</div>
+<!-- How it works section (Horizontal Steps) -->
+<section class="mb-xxl">
+<h2 class="font-headline-md text-headline-md text-plum mb-lg border-b border-plum-light pb-4">How Vistara works</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+<div class="relative group">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-plum mb-4 group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">upload</span>
+</div>
+<div class="hidden lg:block absolute top-6 left-16 right-0 h-px bg-plum-light border-dashed border-t border-plum-light w-full"></div>
+<h3 class="font-title-lg text-title-lg text-plum mb-2">1. Upload</h3>
+<p class="font-body-sm text-on-surface-variant">Securely upload your legal document or paste the text directly into the engine.</p>
+</div>
+<div class="relative group">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-plum mb-4 group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">document_scanner</span>
+</div>
+<div class="hidden lg:block absolute top-6 left-16 right-0 h-px bg-plum-light border-dashed border-t border-plum-light w-full"></div>
+<h3 class="font-title-lg text-title-lg text-plum mb-2">2. Analyze</h3>
+<p class="font-body-sm text-on-surface-variant">Our AI scans the document, identifying standard clauses and flagging anomalies.</p>
+</div>
+<div class="relative group">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-plum mb-4 group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">translate</span>
+</div>
+<div class="hidden lg:block absolute top-6 left-16 right-0 h-px bg-plum-light border-dashed border-t border-plum-light w-full"></div>
+<h3 class="font-title-lg text-title-lg text-plum mb-2">3. Understand</h3>
+<p class="font-body-sm text-on-surface-variant">Complex legalese is translated into plain, actionable language for clear comprehension.</p>
+</div>
+<div class="relative group">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-plum mb-4 group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">task_alt</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-plum mb-2">4. Decide</h3>
+<p class="font-body-sm text-on-surface-variant">Review flagged risks and make informed decisions on negotiations or signatures.</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="bg-surface-container dark:bg-inverse-surface shadow-lg fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 docked full-width bottom-0 lg:hidden flat no shadows border-t border-plum-light">
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-4 py-1 transition-transform hover:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-md text-label-md mt-1">Analysis</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="folder">folder</span>
+<span class="font-label-md text-label-md mt-1">Documents</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-label-md text-label-md mt-1">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<script>
+        // Simple drag and drop interaction simulation
+        const dropZone = document.querySelector('.group .border-dashed');
+        if(dropZone) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight(e) {
+                dropZone.classList.add('bg-surface-container-highest', 'border-primary-container');
+            }
+
+            function unhighlight(e) {
+                dropZone.classList.remove('bg-surface-container-highest', 'border-primary-container');
+            }
+        }
+    </script>
+</body></html>

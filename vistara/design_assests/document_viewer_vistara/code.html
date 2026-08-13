@@ -1,0 +1,229 @@
+<!DOCTYPE html><html class="light" lang="en" style="width: 390px; height: 884px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Apartment Lease - Document Viewer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f3eff4",
+                        "tertiary-fixed-dim": "#cfc2d7",
+                        "on-primary-container": "#603a00",
+                        "tertiary-container": "#b8abc0",
+                        "error-container": "#ffdad6",
+                        "background": "#fcf8fd",
+                        "secondary-fixed-dim": "#d0c0e1",
+                        "on-primary-fixed": "#2a1700",
+                        "inverse-surface": "#313034",
+                        "surface-tint": "#83540c",
+                        "surface-container-highest": "#e5e1e6",
+                        "inverse-primary": "#fabb6c",
+                        "surface-bright": "#fcf8fd",
+                        "on-background": "#1c1b1f",
+                        "surface-dim": "#dcd9de",
+                        "primary-fixed-dim": "#fabb6c",
+                        "on-surface": "#1c1b1f",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ecddf4",
+                        "secondary-container": "#eddcfe",
+                        "surface-container-high": "#ebe7ec",
+                        "on-primary-fixed-variant": "#653e00",
+                        "tertiary": "#655a6d",
+                        "outline-variant": "#d5c4b3",
+                        "on-secondary-container": "#6c5f7c",
+                        "primary": "#83540c",
+                        "primary-container": "#e0a458",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffddb8",
+                        "surface-variant": "#e5e1e6",
+                        "on-secondary-fixed-variant": "#4d425d",
+                        "on-tertiary-container": "#483f51",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "outline": "#837566",
+                        "on-secondary-fixed": "#21172f",
+                        "secondary-fixed": "#eddcfe",
+                        "on-tertiary-fixed": "#201828",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#4d4355",
+                        "surface": "#fcf8fd",
+                        "surface-container-low": "#f6f2f7",
+                        "on-surface-variant": "#504538",
+                        "secondary": "#655975",
+                        "surface-container": "#f0edf2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "xxl": "48px",
+                        "margin-desktop": "40px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "title-lg": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "serif-doc": ["'Times New Roman'", "Times", "serif"] // Added for authentic document feel
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    },
+                    "boxShadow": {
+                        "doc": "0 4px 24px rgba(62, 53, 70, 0.08)"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .highlight-high { background-color: rgba(186, 26, 26, 0.15); border-bottom: 2px solid rgba(186, 26, 26, 0.5); }
+        .highlight-medium { background-color: rgba(224, 164, 88, 0.2); border-bottom: 2px solid rgba(224, 164, 88, 0.6); }
+        .highlight-low { background-color: rgba(184, 171, 192, 0.3); border-bottom: 2px solid rgba(184, 171, 192, 0.5); }
+        
+        /* Subtle scrollbar for document area */
+        .doc-scroll::-webkit-scrollbar { width: 6px; }
+        .doc-scroll::-webkit-scrollbar-track { background: transparent; }
+        .doc-scroll::-webkit-scrollbar-thumb { background-color: #dcd9de; border-radius: 20px; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface h-screen flex flex-col overflow-hidden font-body-md">
+<!-- Top App Bar - Minimal Document Controls -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface-dim flat no shadows flex items-center justify-between px-margin-mobile h-16 w-full z-40 border-b border-surface-variant">
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-highest transition-colors flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h1 class="font-title-lg text-title-lg text-on-surface">Apartment Lease</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Last updated Oct 24, 2023</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="hidden md:flex items-center gap-2 mr-4 text-on-surface-variant bg-surface-container-low px-3 py-1 rounded-full">
+<span class="font-label-md text-label-md">Page 1 of 12</span>
+</div>
+<button class="p-2 rounded-full hover:bg-surface-container-highest transition-colors flex items-center justify-center text-on-surface-variant" title="Search Document">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-highest transition-colors flex items-center justify-center text-on-surface-variant hidden sm:flex" title="Zoom Out">
+<span class="material-symbols-outlined">zoom_out</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-highest transition-colors flex items-center justify-center text-on-surface-variant hidden sm:flex" title="Zoom In">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-highest transition-colors flex items-center justify-center text-on-surface-variant ml-2">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 flex justify-center overflow-hidden bg-surface-container-low relative">
+<!-- Document Canvas -->
+<div class="w-full max-w-4xl h-full overflow-y-auto doc-scroll pt-8 pb-32 px-4 md:px-8">
+<!-- Realistic Document Container -->
+<article class="bg-surface-container-lowest shadow-doc rounded-sm min-h-[1056px] w-full p-8 md:p-16 mx-auto text-on-background">
+<div class="font-serif-doc max-w-[650px] mx-auto text-[15px] leading-[1.6]">
+<h2 class="text-center font-bold text-2xl mb-8 tracking-wide">RESIDENTIAL LEASE AGREEMENT</h2>
+<p class="mb-6">
+                        This Residential Lease Agreement ("Agreement") made this 1st day of November, 2023, is between <strong>PROPERTY MANAGEMENT LLC</strong> ("Landlord"), and <strong>JANE DOE</strong> ("Tenant").
+                    </p>
+<h3 class="font-bold text-lg mt-8 mb-4">1. PREMISES</h3>
+<p class="mb-6">
+                        Landlord hereby leases to Tenant the premises located at 123 Main Street, Apt 4B, Cityville, State 12345 ("Premises"), for use as a residential dwelling only.
+                    </p>
+<h3 class="font-bold text-lg mt-8 mb-4">2. TERM</h3>
+<p class="mb-6">
+                        The term of this lease shall commence on November 1, 2023, and shall terminate on October 31, 2024. 
+                        <span class="highlight-high relative cursor-pointer group rounded-sm px-1 transition-colors hover:bg-[rgba(186,26,26,0.25)]" title="High Risk: Auto-Renewal Clause">
+                            If either party fails to provide a 60-day written notice of intent to terminate or modify this Agreement prior to the expiration date, this Agreement shall automatically renew for an additional 12-month period under the same terms and conditions, subject to a 15% increase in base rent.
+                            <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-error text-on-error font-label-md text-label-md px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none z-10 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span> High Risk: Auto-Renewal
+                            </span>
+</span>
+</p>
+<h3 class="font-bold text-lg mt-8 mb-4">3. RENT</h3>
+<p class="mb-6">
+                        Tenant agrees to pay Landlord as base rent the sum of $2,500.00 per month, due and payable monthly in advance on the 1st day of each month during the term of this Agreement.
+                    </p>
+<h3 class="font-bold text-lg mt-8 mb-4">4. LATE CHARGES</h3>
+<p class="mb-6">
+<span class="highlight-medium relative cursor-pointer group rounded-sm px-1 transition-colors hover:bg-[rgba(224,164,88,0.3)]" title="Medium Risk: Aggressive Late Fee">
+                            If any amount under this Agreement is more than three (3) days late, Tenant agrees to pay a late fee of $150.00, plus an additional $25.00 for each day thereafter that the rent remains unpaid.
+                            <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary-container text-on-primary-container font-label-md text-label-md px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none z-10 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">info</span> Medium Risk: Aggressive Late Fee
+                            </span>
+</span>
+</p>
+<h3 class="font-bold text-lg mt-8 mb-4">5. SECURITY DEPOSIT</h3>
+<p class="mb-6">
+                        Upon execution of this Agreement, Tenant shall deposit with Landlord the sum of $2,500.00 as a security deposit to secure Tenant's faithful performance of the provisions hereof.
+                    </p>
+<h3 class="font-bold text-lg mt-8 mb-4">6. MAINTENANCE AND REPAIR</h3>
+<p class="mb-6">
+<span class="highlight-low relative cursor-pointer group rounded-sm px-1 transition-colors hover:bg-[rgba(184,171,192,0.4)]" title="Low Risk: Standard Maintenance Responsibility">
+                            Tenant shall keep and maintain the Premises in good and sanitary condition during the term of this Agreement. Tenant shall immediately notify Landlord of any damage or required repairs.
+                            <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface-variant text-on-surface-variant font-label-md text-label-md px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none z-10 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">article</span> Low Risk: Standard Maintenance
+                            </span>
+</span>
+</p>
+</div>
+</article>
+</div>
+</main>
+<!-- Compact Floating Footer - Risk Summary -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center bg-surface-container-high border border-surface-variant shadow-[0_8px_32px_rgba(62,53,70,0.12)] rounded-full px-4 py-2 gap-4">
+<div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+<div class="w-3 h-3 rounded-full bg-error"></div>
+<span class="font-label-md text-label-md text-on-surface">3 High</span>
+</div>
+<div class="w-px h-4 bg-outline-variant"></div>
+<div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+<span class="font-label-md text-label-md text-on-surface">5 Medium</span>
+</div>
+<div class="w-px h-4 bg-outline-variant"></div>
+<div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+<div class="w-3 h-3 rounded-full bg-tertiary-container"></div>
+<span class="font-label-md text-label-md text-on-surface">14 Low</span>
+</div>
+</div>
+<div id="snapdom-sandbox" data-snapdom-sandbox="true" aria-hidden="true" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>
