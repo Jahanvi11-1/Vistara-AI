@@ -1,306 +1,321 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../services/storage_service.dart';
-import 'report_screen.dart';
+
+import '../theme/vistara_theme.dart';
 
 class RecentDocumentsScreen extends StatefulWidget {
   const RecentDocumentsScreen({super.key});
 
   @override
-  State<RecentDocumentsScreen> createState() => _RecentDocumentsScreenState();
+  State<RecentDocumentsScreen> createState() =>
+      _RecentDocumentsScreenState();
 }
 
-class _RecentDocumentsScreenState extends State<RecentDocumentsScreen> {
-  final StorageService _storageService = StorageService();
-  List<RecentDocument> _documents = [];
-  bool _isLoading = true;
+class _RecentDocumentsScreenState
+    extends State<RecentDocumentsScreen> {
+  String selectedFilter = 'All';
 
-  @override
-  void initState() {
-    super.initState();
-    _loadDocuments();
-  }
-
-  Future<void> _loadDocuments() async {
-    setState(() => _isLoading = true);
-    final documents = await _storageService.getRecentDocuments();
-    setState(() {
-      _documents = documents;
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _deleteDocument(int index) async {
-    await _storageService.deleteReport(index);
-    _loadDocuments();
-  }
+  final List<Map<String, dynamic>> documents = [
+    {
+      'name': 'Apartment Lease',
+      'date': 'Today',
+      'risk': 'High Risk',
+      'score': 78,
+    },
+    {
+      'name': 'Freelance Agreement',
+      'date': 'Yesterday',
+      'risk': 'Medium Risk',
+      'score': 62,
+    },
+    {
+      'name': 'Student Loan Agreement',
+      'date': 'Aug 10',
+      'risk': 'High Risk',
+      'score': 71,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF5F0), // Pastel peach background
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF6B4FA0)),
-          onPressed: () => Navigator.pop(context),
+      backgroundColor: VistaraColors.lilacWhite,
+
+      body: SafeArea(
+        child: Column(
+          children: [
+            // HEADER
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 10),
+              child: Row(
+                children: [
+                  Text(
+                    'VISTARA',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.4,
+                      color: VistaraColors.ochreAmber,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // TITLE
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Recent Documents',
+                  style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: VistaraColors.plumCharcoal,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 14),
+
+            // SEARCH
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search documents...',
+                  hintStyle: GoogleFonts.poppins(
+                    color: VistaraColors.neutral,
+                    fontSize: 13,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: VistaraColors.mutedText,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(
+                      color: VistaraColors.lavenderGray
+                          .withValues(alpha: .25),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(
+                      color: VistaraColors.lavenderGray
+                          .withValues(alpha: .25),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // FILTERS
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  _filterChip('All'),
+                  _filterChip('High Risk'),
+                  _filterChip('Medium Risk'),
+                  _filterChip('Low Risk'),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 14),
+
+            // DOCUMENT LIST
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+                itemCount: documents.length,
+                separatorBuilder: (_, __) =>
+                const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final document = documents[index];
+
+                  return _documentCard(document);
+                },
+              ),
+            ),
+          ],
         ),
-        title: Text(
-          'Recent Documents',
+      ),
+    );
+  }
+
+  Widget _filterChip(String label) {
+    final selected = selectedFilter == label;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: ChoiceChip(
+        label: Text(
+          label,
           style: GoogleFonts.poppins(
-            color: const Color(0xFF2D2D2D),
-            fontWeight: FontWeight.w600,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: selected
+                ? VistaraColors.plumCharcoal
+                : VistaraColors.mutedText,
           ),
         ),
-        actions: [
-          if (_documents.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: Color(0xFF6B4FA0)),
-              onPressed: () async {
-                final confirmed = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text(
-                      'Clear All',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                    ),
-                    content: Text(
-                      'Are you sure you want to delete all recent documents?',
-                      style: GoogleFonts.inter(),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: Text(
-                          'Cancel',
-                          style: GoogleFonts.poppins(
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        child: Text(
-                          'Clear All',
-                          style: GoogleFonts.poppins(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-
-                if (confirmed == true) {
-                  await _storageService.clearAllReports();
-                  _loadDocuments();
-                }
-              },
-            ),
-        ],
-      ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFF6B4FA0)),
-            )
-          : _documents.isEmpty
-              ? _buildEmptyState()
-              : RefreshIndicator(
-                  onRefresh: _loadDocuments,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(24.0),
-                    itemCount: _documents.length,
-                    itemBuilder: (context, index) {
-                      final document = _documents[index];
-                      return _buildDocumentCard(document, index);
-                    },
-                  ),
-                ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.description_outlined,
-            size: 80,
-            color: Colors.grey[300],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No Recent Documents',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Analyzed contracts will appear here',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              color: Colors.grey[500],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDocumentCard(RecentDocument document, int index) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Dismissible(
-        key: Key('doc_$index'),
-        direction: DismissDirection.endToStart,
-        background: Container(
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: 20),
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: const Icon(Icons.delete, color: Colors.white),
-        ),
-        onDismissed: (direction) {
-          _deleteDocument(index);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Document deleted',
-                style: GoogleFonts.inter(),
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
+        selected: selected,
+        onSelected: (_) {
+          setState(() {
+            selectedFilter = label;
+          });
         },
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ReportScreen(report: document.report),
+        selectedColor: VistaraColors.ochreAmber
+            .withValues(alpha: .22),
+        backgroundColor: Colors.white,
+        side: BorderSide(
+          color: VistaraColors.lavenderGray
+              .withValues(alpha: .25),
+        ),
+      ),
+    );
+  }
+
+  Widget _documentCard(Map<String, dynamic> document) {
+    final String risk = document['risk'];
+    final int score = document['score'];
+
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: () {
+          // Later connect this to the saved ContractReport.
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: VistaraColors.ochreAmber
+                          .withValues(alpha: .12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.description_outlined,
+                      color: VistaraColors.ochreAmber,
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          document['name'],
+                          style: GoogleFonts.poppins(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color:
+                            VistaraColors.plumCharcoal,
+                          ),
+                        ),
+                        Text(
+                          document['date'],
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            color: VistaraColors.neutral,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  _riskBadge(risk),
+                ],
               ),
-            );
-          },
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE8D5FF),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.description,
-                        color: Color(0xFF6B4FA0),
-                        size: 24,
+
+              const SizedBox(height: 16),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius:
+                      BorderRadius.circular(10),
+                      child: LinearProgressIndicator(
+                        value: score / 100,
+                        minHeight: 6,
+                        backgroundColor:
+                        VistaraColors.lavenderGray
+                            .withValues(alpha: .22),
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(
+                          VistaraColors.riskColor(risk),
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            document.documentName,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF2D2D2D),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            document.formattedDate,
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Text(
+                    '$score/100',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: VistaraColors.plumCharcoal,
                     ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16,
-                      color: Color(0xFF6B4FA0),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    _buildInfoChip(
-                      'Score: ${document.report.overallScore}/100',
-                      _getScoreColor(document.report.overallScore),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildInfoChip(
-                      '${document.report.flaggedClauses.length} risks',
-                      const Color(0xFFFFE5E5),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+
+                  const SizedBox(width: 4),
+
+                  const Icon(
+                    Icons.chevron_right,
+                    size: 20,
+                    color: VistaraColors.neutral,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildInfoChip(String label, Color color) {
+  Widget _riskBadge(String risk) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
+      ),
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(12),
+        color: VistaraColors.riskColor(risk)
+            .withValues(alpha: .14),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        label,
-        style: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: const Color(0xFF2D2D2D),
+        risk,
+        style: GoogleFonts.poppins(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: VistaraColors.riskColor(risk),
         ),
       ),
     );
-  }
-
-  Color _getScoreColor(int score) {
-    // Score is 0-100, where lower is more risky
-    if (score >= 70) {
-      return const Color(0xFFE5FFE5); // Green for safe
-    } else if (score >= 40) {
-      return const Color(0xFFFFF5E5); // Yellow/orange for medium risk
-    } else {
-      return const Color(0xFFFFE5E5); // Red for high risk
-    }
   }
 }

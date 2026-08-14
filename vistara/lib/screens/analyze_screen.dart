@@ -1,10 +1,14 @@
 import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:file_picker/file_picker.dart';
+
+import '../models/contract_report.dart';
 import '../services/api_service.dart';
 import '../services/storage_service.dart';
-import '../models/contract_report.dart';
+import '../theme/vistara_theme.dart';
+
 import 'analyzing_screen.dart';
 import 'report_screen.dart';
 
@@ -12,89 +16,132 @@ class AnalyzeScreen extends StatefulWidget {
   const AnalyzeScreen({super.key});
 
   @override
-  State<AnalyzeScreen> createState() => _AnalyzeScreenState();
+  State<AnalyzeScreen> createState() =>
+      _AnalyzeScreenState();
 }
 
-class _AnalyzeScreenState extends State<AnalyzeScreen> {
-  final TextEditingController _textController = TextEditingController();
+class _AnalyzeScreenState
+    extends State<AnalyzeScreen> {
+  final TextEditingController
+  _textController =
+  TextEditingController();
+
   PlatformFile? _selectedFile;
+
   bool _isLoading = false;
-  final ApiService _apiService = ApiService();
-  final StorageService _storageService = StorageService();
+
+  final ApiService _apiService =
+  ApiService();
+
+  final StorageService _storageService =
+  StorageService();
 
   Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result =
+    await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
-      withData: true, // Important for Web
+      withData: true,
     );
 
-    if (result != null && result.files.single.bytes != null) {
+    if (result != null &&
+        result.files.single.bytes != null) {
       setState(() {
-        _selectedFile = result.files.single;
+        _selectedFile =
+            result.files.single;
       });
     }
   }
 
   Future<void> _analyzeContract() async {
-    if (_selectedFile == null && _textController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    if (_selectedFile == null &&
+        _textController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         const SnackBar(
-          content: Text('Please upload a file or enter text'),
-          backgroundColor: Colors.red,
+          content: Text(
+            'Please upload a PDF or enter contract text.',
+          ),
         ),
       );
       return;
     }
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
-      // Show analyzing screen
-      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const AnalyzingScreen(),
+          builder: (_) =>
+          const AnalyzingScreen(),
         ),
       );
 
-      final jsonData = await _apiService.analyzeContract(
-        fileBytes: _selectedFile?.bytes,
-        filename: _selectedFile?.name,
-        text: _textController.text.isNotEmpty ? _textController.text : null,
+      final jsonData =
+      await _apiService.analyzeContract(
+        fileBytes:
+        _selectedFile?.bytes,
+        filename:
+        _selectedFile?.name,
+        text:
+        _textController.text
+            .trim()
+            .isNotEmpty
+            ? _textController.text
+            : null,
         isMock: false,
       );
 
-      // Convert JSON to ContractReport model
-      final report = ContractReport.fromJson(jsonData);
+      final report =
+      ContractReport.fromJson(
+        jsonData,
+      );
 
-      // Save the report to local storage
-      final documentName = _selectedFile?.name ?? 'Text Analysis';
-      await _storageService.saveReport(report, documentName);
+      final documentName =
+          _selectedFile?.name ??
+              'Text Analysis';
+
+      await _storageService.saveReport(
+        report,
+        documentName,
+      );
 
       if (!mounted) return;
-      // Pop analyzing screen and push report screen
+
       Navigator.pop(context);
+
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ReportScreen(report: report),
+          builder: (_) =>
+              ReportScreen(
+                report: report,
+              ),
         ),
       );
     } catch (e) {
       if (!mounted) return;
-      Navigator.pop(context); // Pop analyzing screen
-      ScaffoldMessenger.of(context).showSnackBar(
+
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 5),
+          content: Text(
+            'Unable to analyze document.',
+          ),
+          backgroundColor:
+          VistaraColors.highRisk,
         ),
       );
     } finally {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -102,130 +149,261 @@ class _AnalyzeScreenState extends State<AnalyzeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF5F0), // Pastel peach background
+      backgroundColor:
+      VistaraColors.lilacWhite,
+
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF6B4FA0)),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: Text(
           'Analyze Contract',
           style: GoogleFonts.poppins(
-            color: const Color(0xFF2D2D2D),
-            fontWeight: FontWeight.w600,
+            fontSize: 19,
+            fontWeight:
+            FontWeight.w700,
           ),
         ),
+
+        // IMPORTANT:
+        // Analyze is a bottom-navigation tab.
+        // Therefore don't use Navigator.pop here.
       ),
+
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        physics:
+        const BouncingScrollPhysics(),
+
+        padding:
+        const EdgeInsets.fromLTRB(
+          20,
+          10,
+          20,
+          30,
+        ),
+
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment:
+          CrossAxisAlignment.start,
           children: [
+            Text(
+              'Analyze your document',
+              style: GoogleFonts.poppins(
+                fontSize: 25,
+                fontWeight:
+                FontWeight.w700,
+                color:
+                VistaraColors
+                    .plumCharcoal,
+              ),
+            ),
+
+            const SizedBox(height: 7),
+
+            Text(
+              'Upload a contract or paste its text to identify clauses that may deserve attention.',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                height: 1.5,
+                color:
+                VistaraColors.mutedText,
+              ),
+            ),
+
+            const SizedBox(height: 22),
+
+            // --------------------------------------------------------
+            // PDF UPLOAD
+            // --------------------------------------------------------
+
             Text(
               'Upload Document',
               style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF2D2D2D),
+                fontSize: 15,
+                fontWeight:
+                FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 10),
+
             InkWell(
               onTap: _pickFile,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius:
+              BorderRadius.circular(18),
+
               child: Container(
-                height: 180,
-                decoration: BoxDecoration(
+                width: double.infinity,
+                padding:
+                const EdgeInsets.all(22),
+
+                decoration:
+                BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius:
+                  BorderRadius.circular(
+                    18,
+                  ),
                   border: Border.all(
-                    color: const Color(0xFFE0E0E0),
-                    width: 2,
-                    style: BorderStyle.solid,
+                    color: VistaraColors
+                        .lavenderGray
+                        .withValues(
+                      alpha: 0.25,
+                    ),
                   ),
                 ),
+
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      _selectedFile != null
-                          ? Icons.check_circle
-                          : Icons.cloud_upload_outlined,
-                      size: 64,
-                      color: _selectedFile != null
-                          ? Colors.green
-                          : const Color(0xFF6B4FA0),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      _selectedFile != null
-                          ? _selectedFile!.name
-                          : 'Tap to upload PDF',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        color: Colors.grey[700],
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration:
+                      BoxDecoration(
+                        color: VistaraColors
+                            .ochreAmber
+                            .withValues(
+                          alpha: 0.14,
+                        ),
+                        borderRadius:
+                        BorderRadius
+                            .circular(
+                          15,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
+                      child: Icon(
+                        _selectedFile !=
+                            null
+                            ? Icons
+                            .check_rounded
+                            : Icons
+                            .upload_file_rounded,
+                        color:
+                        VistaraColors
+                            .ochreAmber,
+                        size: 27,
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    Text(
+                      _selectedFile !=
+                          null
+                          ? _selectedFile!
+                          .name
+                          : 'Tap to upload PDF',
+                      textAlign:
+                      TextAlign.center,
+                      style:
+                      GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight:
+                        FontWeight.w600,
+                        color:
+                        VistaraColors
+                            .plumCharcoal,
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      _selectedFile !=
+                          null
+                          ? 'PDF selected'
+                          : 'PDF documents only',
+                      style:
+                      GoogleFonts.poppins(
+                        fontSize: 10,
+                        color:
+                        VistaraColors
+                            .mutedText,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 32),
+
+            const SizedBox(height: 25),
+
+            // --------------------------------------------------------
+            // TEXT
+            // --------------------------------------------------------
+
             Text(
-              'Or Enter Text',
+              'Or paste contract text',
               style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF2D2D2D),
+                fontSize: 15,
+                fontWeight:
+                FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+
+            const SizedBox(height: 10),
+
+            TextField(
+              controller:
+              _textController,
+              maxLines: 9,
+
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color:
+                VistaraColors
+                    .plumCharcoal,
               ),
-              child: TextField(
-                controller: _textController,
-                maxLines: 8,
-                decoration: InputDecoration(
-                  hintText: 'Paste contract text here...',
-                  hintStyle: GoogleFonts.inter(color: Colors.grey[400]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.all(20),
+
+              decoration:
+              const InputDecoration(
+                hintText:
+                'Paste your contract text here...',
+                alignLabelWithHint: true,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                onPressed:
+                _isLoading
+                    ? null
+                    : _analyzeContract,
+
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons
+                          .auto_awesome_rounded,
+                      size: 19,
+                    ),
+                    const SizedBox(width: 9),
+                    Text(
+                      'Analyze Contract',
+                      style:
+                      GoogleFonts.poppins(
+                        fontWeight:
+                        FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _analyzeContract,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6B4FA0),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
+
+            const SizedBox(height: 12),
+
+            Center(
               child: Text(
-                'Analyze Contract',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                'AI-powered analysis. Not legal advice.',
+                style:
+                GoogleFonts.poppins(
+                  fontSize: 9.5,
+                  color:
+                  VistaraColors.neutral,
                 ),
               ),
             ),

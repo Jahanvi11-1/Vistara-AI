@@ -1,0 +1,56 @@
+# ============================================================
+# Root-level .gitignore for Vistara monorepo
+# ============================================================
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ---- IDE ----
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# ---- Sensitive / Secrets ----
+.env
+*.env
+!.env.example
+client_secret.json
+*.pem
+*.key
+*.p12
+*.pfx
+service_account*.json
+
+# ---- Python (vistara-backend) ----
+vistara-backend/venv/
+vistara-backend/.venv/
+vistara-backend/__pycache__/
+vistara-backend/*.py[cod]
+vistara-backend/*.so
+vistara-backend/*.egg
+vistara-backend/*.egg-info/
+vistara-backend/dist/
+vistara-backend/build/
+
+# ---- Flutter backup folders ----
+vistara/android_backup/
+
+# ---- Xcode / Swift Package Manager (generated) ----
+vistara/ios/**/xcshareddata/swiftpm/
+vistara/macos/**/xcshareddata/swiftpm/
+
+# ---- Flutter (vistara) ----
+vistara/build/
+vistara/.dart_tool/
+vistara/.pub-cache/
+vistara/.pub/
+vistara/.flutter-plugins-dependencies
+vistara/.flutter-plugins
+vistara/.widget_preview/
+vistara/coverage/

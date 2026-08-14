@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen_stateful.dart';
+
+import 'screens/onboarding_screen.dart';
+import 'theme/vistara_theme.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const VistaraApp());
 }
 
@@ -13,11 +16,13 @@ class VistaraApp extends StatelessWidget {
     return MaterialApp(
       title: 'Vistara',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6B4FA0)),
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
+
+      // Vistara theme is used globally.
+      theme: VistaraTheme.lightTheme,
+
+      // IMPORTANT:
+      // App always starts with onboarding.
+      home: const OnboardingScreen(),
     );
   }
 }

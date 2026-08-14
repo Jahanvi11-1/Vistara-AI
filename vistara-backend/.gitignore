@@ -59,3 +59,5 @@ vistara/.pub/
 # IDE settings
 .idea/
 .vscode/
+.env
+client_secret.json

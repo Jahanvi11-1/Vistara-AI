@@ -1,40 +1,65 @@
 import io
 import json
-import os
 import traceback
 from enum import Enum
 from typing import List, Optional
 
+import google.auth
+import pdfplumber
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-import google.generativeai as genai
-import pdfplumber
+from google.auth.transport.requests import AuthorizedSession
 from pydantic import BaseModel, Field
 
-# Load environment variables from .env
-load_dotenv()
-
-app = FastAPI(
-    title="Vistara Contract Analysis API",
-    description="AI-powered contract risk analysis using Google Gemini API",
-    version="1.0.0"
-)
 
 # ---------------------------------------------------------------------------
-# CORS Middleware Configuration (Fixes Browser CORS Errors)
+# Environment
+# ---------------------------------------------------------------------------
+load_dotenv()
+
+
+# ---------------------------------------------------------------------------
+# Google Gemini Configuration
+# ---------------------------------------------------------------------------
+GOOGLE_CLOUD_PROJECT = "gen-lang-client-0423817575"
+
+GEMINI_MODEL = "gemini-3.6-flash"
+
+GEMINI_URL = (
+    f"https://generativelanguage.googleapis.com/v1/models/"
+    f"{GEMINI_MODEL}:generateContent"
+)
+
+GEMINI_SCOPES = [
+    "https://www.googleapis.com/auth/generative-language.retriever"
+]
+
+
+# ---------------------------------------------------------------------------
+# FastAPI App
+# ---------------------------------------------------------------------------
+app = FastAPI(
+    title="Vistara Contract Analysis API",
+    description="AI-powered contract risk analysis using Google Gemini",
+    version="1.0.0",
+)
+
+
+# ---------------------------------------------------------------------------
+# CORS
 # ---------------------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=False,  # Set to False to allow wildcard origins in browsers
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
 # ---------------------------------------------------------------------------
-# Data Models (Pydantic & Enums)
+# Data Models
 # ---------------------------------------------------------------------------
 class SeverityLevel(str, Enum):
     high = "High"
@@ -52,7 +77,7 @@ class ClauseRisk(BaseModel):
 
 class ContractReport(BaseModel):
     filename: str
-    overall_score: int = Field(..., ge=0, le=100)  # 0-100 score
+    overall_score: int = Field(..., ge=0, le=100)
     risk_level: str
     high_risk_count: int
     medium_risk_count: int
@@ -61,7 +86,7 @@ class ContractReport(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Mock Report Data
+# Mock Report
 # ---------------------------------------------------------------------------
 MOCK_REPORT = ContractReport(
     filename="apartment_lease_mock.pdf",
@@ -122,12 +147,17 @@ MOCK_REPORT = ContractReport(
             ),
         ),
         ClauseRisk(
-            clause_text="Tenant agrees to keep noise levels to a minimum after 9:00 PM on weekdays.",
+            clause_text=(
+                "Tenant agrees to keep noise levels to a minimum after 9:00 PM on weekdays."
+            ),
             severity=SeverityLevel.low,
             category="Noise / Conduct",
-            plain_explanation="Standard quiet-hours clause, earlier than typical but not unusual.",
+            plain_explanation=(
+                "Standard quiet-hours clause, earlier than typical but not unusual."
+            ),
             worst_case_scenario=(
-                "Landlord uses a minor noise complaint as grounds to initiate eviction proceedings."
+                "Landlord uses a minor noise complaint as grounds to initiate "
+                "eviction proceedings."
             ),
         ),
     ],
@@ -135,96 +165,301 @@ MOCK_REPORT = ContractReport(
 
 
 # ---------------------------------------------------------------------------
-# PDF Helper Function
+# PDF Text Extraction
 # ---------------------------------------------------------------------------
 def extract_text_from_pdf(file_bytes: bytes) -> str:
-    """Extract all plain text from a PDF file using pdfplumber."""
+    """Extract readable text from a PDF using pdfplumber."""
+
     text_parts = []
+
     with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
         for page in pdf.pages:
             page_text = page.extract_text()
+
             if page_text:
                 text_parts.append(page_text)
+
     return "\n".join(text_parts)
 
 
-SYSTEM_PROMPT = """\
-You are an expert contract risk analysis AI. Analyze the provided contract text and return a JSON object \
-that strictly matches the following schema — no extra keys, no markdown fences, raw JSON only:
+# ---------------------------------------------------------------------------
+# Gemini System Prompt
+# ---------------------------------------------------------------------------
+SYSTEM_PROMPT = """
+You are Vistara, an expert contract risk analysis AI.
 
-{
-  "filename": "<string>",
-  "overall_score": <integer 0-100, where 0 = extremely hazardous, 100 = completely safe>,
-  "risk_level": "<High | Medium | Low>",
-  "high_risk_count": <integer>,
-  "medium_risk_count": <integer>,
-  "low_risk_count": <integer>,
-  "flagged_clauses": [
-    {
-      "clause_text": "<exact quote from contract>",
-      "severity": "<High | Medium | Low>",
-      "category": "<short category name>",
-      "plain_explanation": "<plain English explanation>",
-      "worst_case_scenario": "<worst realistic outcome for the signer>"
-    }
-  ]
-}
+Analyze the provided contract and identify clauses that may create:
 
-CRITICAL:
-1. Ensure "severity" values inside "flagged_clauses" are capitalized exactly as "High", "Medium", or "Low".
-2. Be thorough and flag every clause that poses a potential risk, liability trap, or unfair burden on the user.
+- financial risks
+- liabilities
+- unfair obligations
+- termination penalties
+- automatic renewals
+- privacy concerns
+- unusual restrictions
+- excessive responsibilities
+- potentially unfavorable conditions
+
+For every materially relevant risky clause:
+
+1. Quote or closely reproduce the relevant clause.
+2. Assign exactly one severity:
+   High, Medium, or Low.
+3. Give a clear risk category.
+4. Explain the clause in simple plain English.
+5. Explain a realistic worst-case scenario.
+
+Scoring:
+
+- overall_score must be an integer from 0 to 100.
+- 0 = extremely hazardous.
+- 100 = very safe.
+
+Risk level must be:
+High, Medium, or Low.
+
+Important:
+
+- Do not invent clauses.
+- Base the analysis only on the supplied contract.
+- Severity values must strictly be High, Medium, or Low.
+- Return ONLY valid JSON matching the requested schema.
 """
 
 
 # ---------------------------------------------------------------------------
-# Gemini AI Analysis Function
+# Create Gemini HTTP Session
 # ---------------------------------------------------------------------------
-async def analyze_with_gemini(contract_text: str, filename: str) -> ContractReport:
-    """Send contract text to Google Gemini API and parse into ContractReport."""
-    # Read Gemini key from environment
-    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        raise HTTPException(
-            status_code=500,
-            detail="GEMINI_API_KEY is missing in your .env file.",
-        )
+def get_gemini_session() -> AuthorizedSession:
+    """
+    Create an authenticated HTTP session using
+    Google Application Default Credentials.
+    """
+
+    credentials, detected_project = google.auth.default(
+        scopes=GEMINI_SCOPES
+    )
+
+    session = AuthorizedSession(credentials)
+
+    return session
+
+
+# ---------------------------------------------------------------------------
+# Gemini Analysis
+# ---------------------------------------------------------------------------
+async def analyze_with_gemini(
+    contract_text: str,
+    filename: str,
+) -> ContractReport:
 
     try:
-        # Configure Gemini Client
-        genai.configure(api_key=api_key)
-        
-        # Use gemini-2.5-flash model with forced JSON response output
-        model = genai.GenerativeModel(
-            model_name="gemini-2.5-flash",
-            generation_config={"response_mime_type": "application/json"}
+        # ---------------------------------------------------------------
+        # Get OAuth/ADC authenticated session
+        # ---------------------------------------------------------------
+        session = get_gemini_session()
+
+        # ---------------------------------------------------------------
+        # Prompt
+        # ---------------------------------------------------------------
+        user_prompt = (
+            f"Filename: {filename}\n\n"
+            f"Contract Text:\n{contract_text[:15000]}"
         )
 
-        user_prompt = f"{SYSTEM_PROMPT}\n\nFilename: {filename}\n\nContract Text:\n{contract_text[:15000]}"
+        # ---------------------------------------------------------------
+        # JSON schema sent to Gemini
+        # ---------------------------------------------------------------
+        response_schema = {
+            "type": "OBJECT",
+            "properties": {
+                "filename": {
+                    "type": "STRING"
+                },
+                "overall_score": {
+                    "type": "INTEGER"
+                },
+                "risk_level": {
+                    "type": "STRING",
+                    "enum": ["High", "Medium", "Low"]
+                },
+                "high_risk_count": {
+                    "type": "INTEGER"
+                },
+                "medium_risk_count": {
+                    "type": "INTEGER"
+                },
+                "low_risk_count": {
+                    "type": "INTEGER"
+                },
+                "flagged_clauses": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "clause_text": {
+                                "type": "STRING"
+                            },
+                            "severity": {
+                                "type": "STRING",
+                                "enum": [
+                                    "High",
+                                    "Medium",
+                                    "Low"
+                                ]
+                            },
+                            "category": {
+                                "type": "STRING"
+                            },
+                            "plain_explanation": {
+                                "type": "STRING"
+                            },
+                            "worst_case_scenario": {
+                                "type": "STRING"
+                            }
+                        },
+                        "required": [
+                            "clause_text",
+                            "severity",
+                            "category",
+                            "plain_explanation",
+                            "worst_case_scenario"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "filename",
+                "overall_score",
+                "risk_level",
+                "high_risk_count",
+                "medium_risk_count",
+                "low_risk_count",
+                "flagged_clauses"
+            ]
+        }
 
-        response = model.generate_content(user_prompt)
+        # ---------------------------------------------------------------
+        # Gemini request
+        # ---------------------------------------------------------------
+        payload = {
+            "systemInstruction": {
+                "parts": [
+                    {
+                        "text": SYSTEM_PROMPT
+                    }
+                ]
+            },
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [
+                        {
+                            "text": user_prompt
+                        }
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.2,
+                "responseMimeType": "application/json",
+                "responseSchema": response_schema
+            }
+        }
 
-        raw_json = response.text.strip()
-        data = json.loads(raw_json)
+        # ---------------------------------------------------------------
+        # Make authenticated request
+        # ---------------------------------------------------------------
+        response = session.post(
+            GEMINI_URL,
+            headers={
+                "x-goog-user-project": GOOGLE_CLOUD_PROJECT,
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=120,
+        )
 
-        # Ensure filename is preserved correctly
-        data["filename"] = filename
+        # ---------------------------------------------------------------
+        # Handle API errors
+        # ---------------------------------------------------------------
+        if response.status_code != 200:
+            print("Gemini HTTP Status:", response.status_code)
+            print("Gemini Response:", response.text)
 
-        # Normalize severity strings if Gemini produces lowercase values
-        if "flagged_clauses" in data and isinstance(data["flagged_clauses"], list):
-            for clause in data["flagged_clauses"]:
-                if isinstance(clause, dict) and "severity" in clause:
-                    clause["severity"] = str(clause["severity"]).capitalize()
+            raise HTTPException(
+                status_code=500,
+                detail=(
+                    "Gemini API request failed: "
+                    f"{response.status_code} - {response.text}"
+                ),
+            )
 
-        return ContractReport(**data)
+        # ---------------------------------------------------------------
+        # Parse Gemini response
+        # ---------------------------------------------------------------
+        response_data = response.json()
+
+        candidates = response_data.get("candidates", [])
+
+        if not candidates:
+            raise HTTPException(
+                status_code=500,
+                detail="Gemini returned no analysis candidates.",
+            )
+
+        parts = (
+            candidates[0]
+            .get("content", {})
+            .get("parts", [])
+        )
+
+        if not parts:
+            raise HTTPException(
+                status_code=500,
+                detail="Gemini returned an empty analysis response.",
+            )
+
+        generated_text = parts[0].get("text", "")
+
+        if not generated_text:
+            raise HTTPException(
+                status_code=500,
+                detail="Gemini returned empty analysis text.",
+            )
+
+        # ---------------------------------------------------------------
+        # Parse JSON
+        # ---------------------------------------------------------------
+        report_data = json.loads(generated_text)
+
+        # Always trust the actual uploaded filename
+        report_data["filename"] = filename
+
+        # ---------------------------------------------------------------
+        # Validate using Pydantic
+        # ---------------------------------------------------------------
+        report = ContractReport(**report_data)
+
+        return report
+
+    except HTTPException:
+        raise
 
     except json.JSONDecodeError as e:
-        print(f"JSON Parsing Error: {e}")
+        print("JSON Parsing Error:", e)
+
         raise HTTPException(
             status_code=500,
-            detail="Gemini API returned an invalid JSON response structure.",
+            detail="Gemini returned invalid JSON.",
         )
+
     except Exception as e:
-        print(f"Server Error during Gemini analysis:\n{traceback.format_exc()}")
+        print(
+            "Server Error during Gemini analysis:\n"
+            f"{traceback.format_exc()}"
+        )
+
         raise HTTPException(
             status_code=500,
             detail=f"Gemini API analysis failed: {str(e)}",
@@ -232,54 +467,116 @@ async def analyze_with_gemini(contract_text: str, filename: str) -> ContractRepo
 
 
 # ---------------------------------------------------------------------------
-# API Endpoints
+# Root Endpoint
 # ---------------------------------------------------------------------------
 @app.get("/")
 async def root():
-    return {"status": "ok", "message": "Vistara Contract Analysis API (Gemini Powered) is running"}
+    return {
+        "status": "ok",
+        "message": (
+            "Vistara Contract Analysis API "
+            "(Gemini Powered) is running"
+        ),
+    }
 
 
-@app.post("/analyze", response_model=ContractReport)
+# ---------------------------------------------------------------------------
+# Analyze Endpoint
+# ---------------------------------------------------------------------------
+@app.post(
+    "/analyze",
+    response_model=ContractReport
+)
 async def analyze_contract(
     mock: bool = Query(False),
     file: Optional[UploadFile] = File(None),
     text: Optional[str] = Form(None),
 ):
-    """
-    Analyzes a contract for risky clauses using Google Gemini AI.
 
-    - Set `mock=true` to get a sample response instantly without making an API request.
-    - Provide either `file` (PDF/text upload) or `text` (raw pasted string).
-    """
+    # ---------------------------------------------------------------
+    # Mock mode
+    # ---------------------------------------------------------------
     if mock:
         return MOCK_REPORT
 
     filename = "contract.txt"
     contract_text = ""
 
-    # Process uploaded file or form text
+    # ---------------------------------------------------------------
+    # File upload
+    # ---------------------------------------------------------------
     if file is not None:
+
         filename = file.filename or "upload.pdf"
+
         file_bytes = await file.read()
 
-        if filename.lower().endswith(".pdf"):
-            contract_text = extract_text_from_pdf(file_bytes)
-        else:
-            contract_text = file_bytes.decode("utf-8", errors="replace")
+        if not file_bytes:
+            raise HTTPException(
+                status_code=422,
+                detail="Uploaded file is empty.",
+            )
 
+        # PDF
+        if filename.lower().endswith(".pdf"):
+
+            try:
+                contract_text = extract_text_from_pdf(
+                    file_bytes
+                )
+
+            except Exception as e:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Could not read PDF: {str(e)}",
+                )
+
+        # Text / other readable file
+        else:
+
+            contract_text = file_bytes.decode(
+                "utf-8",
+                errors="replace",
+            )
+
+    # ---------------------------------------------------------------
+    # Raw text
+    # ---------------------------------------------------------------
     elif text:
+
+        filename = "contract.txt"
         contract_text = text
 
+    # ---------------------------------------------------------------
+    # Nothing supplied
+    # ---------------------------------------------------------------
     else:
+
         raise HTTPException(
             status_code=422,
-            detail="Provide either a file upload or text in the request body.",
+            detail=(
+                "Provide either a file upload "
+                "or text in the request body."
+            ),
         )
 
+    # ---------------------------------------------------------------
+    # Validate text
+    # ---------------------------------------------------------------
     if not contract_text.strip():
+
         raise HTTPException(
             status_code=422,
-            detail="Could not extract any readable text from the provided input.",
+            detail=(
+                "Could not extract any readable text "
+                "from the provided input."
+            ),
         )
 
-    return await analyze_with_gemini(contract_text, filename)
+    # ---------------------------------------------------------------
+    # Gemini Analysis
+    # ---------------------------------------------------------------
+    return await analyze_with_gemini(
+        contract_text=contract_text,
+        filename=filename,
+    )
