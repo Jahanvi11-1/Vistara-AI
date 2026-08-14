@@ -1,44 +1,43 @@
 import io
 import json
+import os
 import traceback
 from enum import Enum
 from typing import List, Optional
 
-import google.auth
-import pdfplumber
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from google.auth.transport.requests import AuthorizedSession
+from google import genai
+from google.genai import types
+import pdfplumber
 from pydantic import BaseModel, Field
 
 
-# ---------------------------------------------------------------------------
-# Environment
-# ---------------------------------------------------------------------------
+# ============================================================================
+# ENVIRONMENT
+# ============================================================================
+
 load_dotenv()
 
 
-# ---------------------------------------------------------------------------
-# Google Gemini Configuration
-# ---------------------------------------------------------------------------
-GOOGLE_CLOUD_PROJECT = "gen-lang-client-0423817575"
+# ============================================================================
+# GEMINI CONFIGURATION
+# ============================================================================
 
-GEMINI_MODEL = "gemini-3.6-flash"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-GEMINI_URL = (
-    f"https://generativelanguage.googleapis.com/v1/models/"
-    f"{GEMINI_MODEL}:generateContent"
+# You can change the model later without changing the code.
+GEMINI_MODEL = os.getenv(
+    "GEMINI_MODEL",
+    "gemini-3.6-flash",
 )
 
-GEMINI_SCOPES = [
-    "https://www.googleapis.com/auth/generative-language.retriever"
-]
 
+# ============================================================================
+# FASTAPI APP
+# ============================================================================
 
-# ---------------------------------------------------------------------------
-# FastAPI App
-# ---------------------------------------------------------------------------
 app = FastAPI(
     title="Vistara Contract Analysis API",
     description="AI-powered contract risk analysis using Google Gemini",
@@ -46,9 +45,10 @@ app = FastAPI(
 )
 
 
-# ---------------------------------------------------------------------------
+# ============================================================================
 # CORS
-# ---------------------------------------------------------------------------
+# ============================================================================
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -58,9 +58,10 @@ app.add_middleware(
 )
 
 
-# ---------------------------------------------------------------------------
-# Data Models
-# ---------------------------------------------------------------------------
+# ============================================================================
+# DATA MODELS
+# ============================================================================
+
 class SeverityLevel(str, Enum):
     high = "High"
     medium = "Medium"
@@ -85,9 +86,10 @@ class ContractReport(BaseModel):
     flagged_clauses: List[ClauseRisk]
 
 
-# ---------------------------------------------------------------------------
-# Mock Report
-# ---------------------------------------------------------------------------
+# ============================================================================
+# MOCK REPORT
+# ============================================================================
+
 MOCK_REPORT = ContractReport(
     filename="apartment_lease_mock.pdf",
     overall_score=28,
@@ -105,50 +107,55 @@ MOCK_REPORT = ContractReport(
             severity=SeverityLevel.high,
             category="Automatic Renewal",
             plain_explanation=(
-                "Your lease renews itself for another full year unless you send a formal "
-                "written notice 90 days before it ends. Missing that window locks you in."
+                "Your lease renews itself for another full year unless you send a "
+                "formal written notice 90 days before it ends. Missing that window "
+                "locks you in."
             ),
             worst_case_scenario=(
-                "You forget to send notice in time, get automatically locked into another "
-                "12-month lease, and owe a full year's rent even if you need to move out."
+                "You forget to send notice in time, get automatically locked into "
+                "another 12-month lease, and owe a full year's rent even if you "
+                "need to move out."
             ),
         ),
         ClauseRisk(
             clause_text=(
-                "Tenant shall be solely responsible for any and all damages to the premises, "
-                "including structural repairs, plumbing, electrical systems, and appliances, "
-                "regardless of cause."
+                "Tenant shall be solely responsible for any and all damages to the "
+                "premises, including structural repairs, plumbing, electrical systems, "
+                "and appliances, regardless of cause."
             ),
             severity=SeverityLevel.high,
             category="Liability",
             plain_explanation=(
-                "You are on the hook for all repairs — even things that break through normal "
-                "wear, pre-existing issues, or causes outside your control."
+                "You are on the hook for all repairs — even things that break through "
+                "normal wear, pre-existing issues, or causes outside your control."
             ),
             worst_case_scenario=(
-                "A pipe bursts due to building age, and you are billed thousands of dollars "
-                "for structural repairs that are legally the landlord's responsibility."
+                "A pipe bursts due to building age, and you are billed thousands of "
+                "dollars for structural repairs that are legally the landlord's "
+                "responsibility."
             ),
         ),
         ClauseRisk(
             clause_text=(
-                "Landlord may enter the premises at any time with or without notice for "
-                "inspection, maintenance, or any other purpose deemed necessary."
+                "Landlord may enter the premises at any time with or without notice "
+                "for inspection, maintenance, or any other purpose deemed necessary."
             ),
             severity=SeverityLevel.medium,
             category="Privacy / Entry Rights",
             plain_explanation=(
-                "The landlord can walk in whenever they want without telling you first, "
-                "which violates standard tenant privacy rights in most jurisdictions."
+                "The landlord can walk in whenever they want without telling you "
+                "first, which violates standard tenant privacy rights in many "
+                "jurisdictions."
             ),
             worst_case_scenario=(
-                "Your landlord enters repeatedly without warning, disrupting your life and "
-                "potentially violating local tenant protection laws."
+                "Your landlord enters repeatedly without warning, disrupting your "
+                "life and potentially violating local tenant protection laws."
             ),
         ),
         ClauseRisk(
             clause_text=(
-                "Tenant agrees to keep noise levels to a minimum after 9:00 PM on weekdays."
+                "Tenant agrees to keep noise levels to a minimum after 9:00 PM "
+                "on weekdays."
             ),
             severity=SeverityLevel.low,
             category="Noise / Conduct",
@@ -164,11 +171,14 @@ MOCK_REPORT = ContractReport(
 )
 
 
-# ---------------------------------------------------------------------------
-# PDF Text Extraction
-# ---------------------------------------------------------------------------
+# ============================================================================
+# PDF TEXT EXTRACTION
+# ============================================================================
+
 def extract_text_from_pdf(file_bytes: bytes) -> str:
-    """Extract readable text from a PDF using pdfplumber."""
+    """
+    Extract readable text from a PDF using pdfplumber.
+    """
 
     text_parts = []
 
@@ -182,9 +192,10 @@ def extract_text_from_pdf(file_bytes: bytes) -> str:
     return "\n".join(text_parts)
 
 
-# ---------------------------------------------------------------------------
-# Gemini System Prompt
-# ---------------------------------------------------------------------------
+# ============================================================================
+# GEMINI SYSTEM PROMPT
+# ============================================================================
+
 SYSTEM_PROMPT = """
 You are Vistara, an expert contract risk analysis AI.
 
@@ -216,6 +227,7 @@ Scoring:
 - 100 = very safe.
 
 Risk level must be:
+
 High, Medium, or Low.
 
 Important:
@@ -227,70 +239,78 @@ Important:
 """
 
 
-# ---------------------------------------------------------------------------
-# Create Gemini HTTP Session
-# ---------------------------------------------------------------------------
-def get_gemini_session() -> AuthorizedSession:
-    """
-    Create an authenticated HTTP session using
-    Google Application Default Credentials.
-    """
+# ============================================================================
+# GEMINI ANALYSIS
+# ============================================================================
 
-    credentials, detected_project = google.auth.default(
-        scopes=GEMINI_SCOPES
-    )
-
-    session = AuthorizedSession(credentials)
-
-    return session
-
-
-# ---------------------------------------------------------------------------
-# Gemini Analysis
-# ---------------------------------------------------------------------------
 async def analyze_with_gemini(
     contract_text: str,
     filename: str,
 ) -> ContractReport:
 
-    try:
-        # ---------------------------------------------------------------
-        # Get OAuth/ADC authenticated session
-        # ---------------------------------------------------------------
-        session = get_gemini_session()
+    # ------------------------------------------------------------------------
+    # Check API key
+    # ------------------------------------------------------------------------
 
-        # ---------------------------------------------------------------
+    api_key = os.getenv("GEMINI_API_KEY")
+
+    if not api_key:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "GEMINI_API_KEY is missing. "
+                "Add your Google AI Studio API key to the .env file."
+            ),
+        )
+
+    try:
+
+        # --------------------------------------------------------------------
+        # Initialize Google GenAI client using API KEY
+        # --------------------------------------------------------------------
+
+        client = genai.Client(
+            api_key=api_key,
+        )
+
+        # --------------------------------------------------------------------
         # Prompt
-        # ---------------------------------------------------------------
+        # --------------------------------------------------------------------
+
         user_prompt = (
             f"Filename: {filename}\n\n"
             f"Contract Text:\n{contract_text[:15000]}"
         )
 
-        # ---------------------------------------------------------------
-        # JSON schema sent to Gemini
-        # ---------------------------------------------------------------
+        # --------------------------------------------------------------------
+        # Structured output schema
+        # --------------------------------------------------------------------
+
         response_schema = {
             "type": "OBJECT",
             "properties": {
                 "filename": {
-                    "type": "STRING"
+                    "type": "STRING",
                 },
                 "overall_score": {
-                    "type": "INTEGER"
+                    "type": "INTEGER",
                 },
                 "risk_level": {
                     "type": "STRING",
-                    "enum": ["High", "Medium", "Low"]
+                    "enum": [
+                        "High",
+                        "Medium",
+                        "Low",
+                    ],
                 },
                 "high_risk_count": {
-                    "type": "INTEGER"
+                    "type": "INTEGER",
                 },
                 "medium_risk_count": {
-                    "type": "INTEGER"
+                    "type": "INTEGER",
                 },
                 "low_risk_count": {
-                    "type": "INTEGER"
+                    "type": "INTEGER",
                 },
                 "flagged_clauses": {
                     "type": "ARRAY",
@@ -298,35 +318,35 @@ async def analyze_with_gemini(
                         "type": "OBJECT",
                         "properties": {
                             "clause_text": {
-                                "type": "STRING"
+                                "type": "STRING",
                             },
                             "severity": {
                                 "type": "STRING",
                                 "enum": [
                                     "High",
                                     "Medium",
-                                    "Low"
-                                ]
+                                    "Low",
+                                ],
                             },
                             "category": {
-                                "type": "STRING"
+                                "type": "STRING",
                             },
                             "plain_explanation": {
-                                "type": "STRING"
+                                "type": "STRING",
                             },
                             "worst_case_scenario": {
-                                "type": "STRING"
-                            }
+                                "type": "STRING",
+                            },
                         },
                         "required": [
                             "clause_text",
                             "severity",
                             "category",
                             "plain_explanation",
-                            "worst_case_scenario"
-                        ]
-                    }
-                }
+                            "worst_case_scenario",
+                        ],
+                    },
+                },
             },
             "required": [
                 "filename",
@@ -335,157 +355,153 @@ async def analyze_with_gemini(
                 "high_risk_count",
                 "medium_risk_count",
                 "low_risk_count",
-                "flagged_clauses"
-            ]
-        }
-
-        # ---------------------------------------------------------------
-        # Gemini request
-        # ---------------------------------------------------------------
-        payload = {
-            "systemInstruction": {
-                "parts": [
-                    {
-                        "text": SYSTEM_PROMPT
-                    }
-                ]
-            },
-            "contents": [
-                {
-                    "role": "user",
-                    "parts": [
-                        {
-                            "text": user_prompt
-                        }
-                    ]
-                }
+                "flagged_clauses",
             ],
-            "generationConfig": {
-                "temperature": 0.2,
-                "responseMimeType": "application/json",
-                "responseSchema": response_schema
-            }
         }
 
-        # ---------------------------------------------------------------
-        # Make authenticated request
-        # ---------------------------------------------------------------
-        response = session.post(
-            GEMINI_URL,
-            headers={
-                "x-goog-user-project": GOOGLE_CLOUD_PROJECT,
-                "Content-Type": "application/json",
-            },
-            json=payload,
-            timeout=120,
+        # --------------------------------------------------------------------
+        # Gemini request
+        # --------------------------------------------------------------------
+
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=user_prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                temperature=0.2,
+                response_mime_type="application/json",
+                response_schema=response_schema,
+            ),
         )
 
-        # ---------------------------------------------------------------
-        # Handle API errors
-        # ---------------------------------------------------------------
-        if response.status_code != 200:
-            print("Gemini HTTP Status:", response.status_code)
-            print("Gemini Response:", response.text)
+        # --------------------------------------------------------------------
+        # Get response text
+        # --------------------------------------------------------------------
 
+        if not response.text:
             raise HTTPException(
                 status_code=500,
-                detail=(
-                    "Gemini API request failed: "
-                    f"{response.status_code} - {response.text}"
-                ),
+                detail="Gemini returned an empty response.",
             )
 
-        # ---------------------------------------------------------------
-        # Parse Gemini response
-        # ---------------------------------------------------------------
-        response_data = response.json()
-
-        candidates = response_data.get("candidates", [])
-
-        if not candidates:
-            raise HTTPException(
-                status_code=500,
-                detail="Gemini returned no analysis candidates.",
-            )
-
-        parts = (
-            candidates[0]
-            .get("content", {})
-            .get("parts", [])
-        )
-
-        if not parts:
-            raise HTTPException(
-                status_code=500,
-                detail="Gemini returned an empty analysis response.",
-            )
-
-        generated_text = parts[0].get("text", "")
-
-        if not generated_text:
-            raise HTTPException(
-                status_code=500,
-                detail="Gemini returned empty analysis text.",
-            )
-
-        # ---------------------------------------------------------------
+        # --------------------------------------------------------------------
         # Parse JSON
-        # ---------------------------------------------------------------
-        report_data = json.loads(generated_text)
+        # --------------------------------------------------------------------
 
+        try:
+            report_data = json.loads(response.text)
+
+        except json.JSONDecodeError as e:
+            print("JSON Parsing Error:", e)
+            print("Gemini response:", response.text)
+
+            raise HTTPException(
+                status_code=500,
+                detail="Gemini returned invalid JSON.",
+            )
+
+        # --------------------------------------------------------------------
         # Always trust the actual uploaded filename
+        # --------------------------------------------------------------------
+
         report_data["filename"] = filename
 
-        # ---------------------------------------------------------------
+        # --------------------------------------------------------------------
         # Validate using Pydantic
-        # ---------------------------------------------------------------
+        # --------------------------------------------------------------------
+
         report = ContractReport(**report_data)
 
         return report
 
+    # ------------------------------------------------------------------------
+    # HTTP errors from our API
+    # ------------------------------------------------------------------------
+
     except HTTPException:
         raise
 
-    except json.JSONDecodeError as e:
-        print("JSON Parsing Error:", e)
-
-        raise HTTPException(
-            status_code=500,
-            detail="Gemini returned invalid JSON.",
-        )
+    # ------------------------------------------------------------------------
+    # Gemini/API errors
+    # ------------------------------------------------------------------------
 
     except Exception as e:
+
+        error_text = str(e)
+
         print(
-            "Server Error during Gemini analysis:\n"
+            "Gemini API Error:\n"
             f"{traceback.format_exc()}"
         )
 
+        # ------------------------------------------------------------
+        # Handle quota / rate limit specifically
+        # ------------------------------------------------------------
+
+        if (
+            "429" in error_text
+            or "RESOURCE_EXHAUSTED" in error_text
+            or "quota" in error_text.lower()
+        ):
+            raise HTTPException(
+                status_code=429,
+                detail=(
+                    "Gemini API quota has been exceeded. "
+                    "Please check your Google AI Studio project quota "
+                    "or try again later."
+                ),
+            )
+
+        # ------------------------------------------------------------
+        # Handle authentication errors specifically
+        # ------------------------------------------------------------
+
+        if (
+            "401" in error_text
+            or "UNAUTHENTICATED" in error_text
+            or "authentication" in error_text.lower()
+        ):
+            raise HTTPException(
+                status_code=401,
+                detail=(
+                    "Gemini API authentication failed. "
+                    "Check that GEMINI_API_KEY in .env contains "
+                    "a valid Google AI Studio API key."
+                ),
+            )
+
+        # ------------------------------------------------------------
+        # General error
+        # ------------------------------------------------------------
+
         raise HTTPException(
             status_code=500,
-            detail=f"Gemini API analysis failed: {str(e)}",
+            detail=f"Gemini API analysis failed: {error_text}",
         )
 
 
-# ---------------------------------------------------------------------------
-# Root Endpoint
-# ---------------------------------------------------------------------------
+# ============================================================================
+# ROOT ENDPOINT
+# ============================================================================
+
 @app.get("/")
 async def root():
     return {
         "status": "ok",
         "message": (
             "Vistara Contract Analysis API "
-            "(Gemini Powered) is running"
+            "(Gemini API Key Powered) is running"
         ),
     }
 
 
-# ---------------------------------------------------------------------------
-# Analyze Endpoint
-# ---------------------------------------------------------------------------
+# ============================================================================
+# ANALYZE ENDPOINT
+# ============================================================================
+
 @app.post(
     "/analyze",
-    response_model=ContractReport
+    response_model=ContractReport,
 )
 async def analyze_contract(
     mock: bool = Query(False),
@@ -493,18 +509,20 @@ async def analyze_contract(
     text: Optional[str] = Form(None),
 ):
 
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Mock mode
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
+
     if mock:
         return MOCK_REPORT
 
     filename = "contract.txt"
     contract_text = ""
 
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # File upload
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
+
     if file is not None:
 
         filename = file.filename or "upload.pdf"
@@ -517,21 +535,28 @@ async def analyze_contract(
                 detail="Uploaded file is empty.",
             )
 
+        # ------------------------------------------------------------
         # PDF
+        # ------------------------------------------------------------
+
         if filename.lower().endswith(".pdf"):
 
             try:
                 contract_text = extract_text_from_pdf(
-                    file_bytes
+                    file_bytes,
                 )
 
             except Exception as e:
+
                 raise HTTPException(
                     status_code=422,
                     detail=f"Could not read PDF: {str(e)}",
                 )
 
-        # Text / other readable file
+        # ------------------------------------------------------------
+        # Other readable files
+        # ------------------------------------------------------------
+
         else:
 
             contract_text = file_bytes.decode(
@@ -539,17 +564,19 @@ async def analyze_contract(
                 errors="replace",
             )
 
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Raw text
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
+
     elif text:
 
         filename = "contract.txt"
         contract_text = text
 
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Nothing supplied
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
+
     else:
 
         raise HTTPException(
@@ -560,9 +587,10 @@ async def analyze_contract(
             ),
         )
 
-    # ---------------------------------------------------------------
-    # Validate text
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # Validate extracted text
+    # ------------------------------------------------------------------------
+
     if not contract_text.strip():
 
         raise HTTPException(
@@ -573,9 +601,10 @@ async def analyze_contract(
             ),
         )
 
-    # ---------------------------------------------------------------
-    # Gemini Analysis
-    # ---------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # Gemini analysis
+    # ------------------------------------------------------------------------
+
     return await analyze_with_gemini(
         contract_text=contract_text,
         filename=filename,
