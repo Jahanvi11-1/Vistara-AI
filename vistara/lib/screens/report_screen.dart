@@ -2,19 +2,100 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../models/contract_report.dart';
+import '../services/report_storage_service.dart';
 import '../theme/vistara_theme.dart';
 import '../widgets/vistara_bottom_nav.dart';
 
 import 'main_navigation.dart';
 import 'risk_detail_screen.dart';
+import 'saved_reports_screen.dart';
 
-class ReportScreen extends StatelessWidget {
+class ReportScreen extends StatefulWidget {
   final ContractReport report;
 
   const ReportScreen({
     super.key,
     required this.report,
   });
+
+  @override
+  State<ReportScreen> createState() => _ReportScreenState();
+}
+
+class _ReportScreenState extends State<ReportScreen> {
+  final ReportStorageService _storageService =
+  ReportStorageService();
+
+  bool _isSaving = false;
+
+  // ================================================================
+  // SAVE REPORT
+  // ================================================================
+
+  Future<void> _saveReport() async {
+    if (_isSaving) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      final pdfPath = await _storageService.saveReport(
+        widget.report,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'Report saved successfully.',
+          ),
+          action: SnackBarAction(
+            label: 'VIEW',
+            onPressed: _openSavedReports,
+          ),
+        ),
+      );
+
+      debugPrint(
+        'VISTARA REPORT SAVED: $pdfPath',
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Could not save report: $e',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
+  // ================================================================
+  // OPEN SAVED REPORTS
+  // ================================================================
+
+  void _openSavedReports() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const SavedReportsScreen(),
+      ),
+    );
+  }
+
+  // ================================================================
+  // BUILD
+  // ================================================================
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +123,9 @@ class ReportScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _displayFilename(report.filename),
+              _displayFilename(
+                widget.report.filename,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.poppins(
@@ -51,6 +134,7 @@ class ReportScreen extends StatelessWidget {
                 color: VistaraColors.plumCharcoal,
               ),
             ),
+
             Text(
               'Analysis Report',
               style: GoogleFonts.poppins(
@@ -61,23 +145,75 @@ class ReportScreen extends StatelessWidget {
             ),
           ],
         ),
+
+        actions: [
+          // Saved reports
+          IconButton(
+            tooltip: 'Saved Reports',
+            onPressed: _openSavedReports,
+            icon: const Icon(
+              Icons.folder_copy_outlined,
+              color: VistaraColors.plumCharcoal,
+            ),
+          ),
+
+          // Save current report
+          IconButton(
+            tooltip: 'Save Report',
+            onPressed: _isSaving
+                ? null
+                : _saveReport,
+            icon: _isSaving
+                ? const SizedBox(
+              width: 19,
+              height: 19,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            )
+                : const Icon(
+              Icons.download_outlined,
+              color: VistaraColors.plumCharcoal,
+            ),
+          ),
+        ],
       ),
 
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
+
           padding: const EdgeInsets.fromLTRB(
             18,
             8,
             18,
             24,
           ),
+
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
+
             children: [
+              // ----------------------------------------------------
+              // SCORE
+              // ----------------------------------------------------
+
               _buildScoreCard(),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
+
+              // ----------------------------------------------------
+              // SAVE REPORT
+              // ----------------------------------------------------
+
+              _buildSaveReportButton(),
+
+              const SizedBox(height: 20),
+
+              // ----------------------------------------------------
+              // RISK BREAKDOWN
+              // ----------------------------------------------------
 
               Text(
                 'Risk Breakdown',
@@ -94,6 +230,10 @@ class ReportScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
+              // ----------------------------------------------------
+              // TOP RISKS
+              // ----------------------------------------------------
+
               Row(
                 children: [
                   Expanded(
@@ -102,27 +242,42 @@ class ReportScreen extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: VistaraColors.plumCharcoal,
+                        color:
+                        VistaraColors.plumCharcoal,
                       ),
                     ),
                   ),
 
                   Container(
-                    padding: const EdgeInsets.symmetric(
+                    padding:
+                    const EdgeInsets.symmetric(
                       horizontal: 9,
                       vertical: 4,
                     ),
-                    decoration: BoxDecoration(
-                      color: VistaraColors.ochreAmber
-                          .withValues(alpha: 0.13),
-                      borderRadius: BorderRadius.circular(20),
+
+                    decoration:
+                    BoxDecoration(
+                      color: VistaraColors
+                          .ochreAmber
+                          .withValues(
+                        alpha: 0.13,
+                      ),
+                      borderRadius:
+                      BorderRadius.circular(
+                        20,
+                      ),
                     ),
+
                     child: Text(
-                      '${report.flaggedClauses.length}',
-                      style: GoogleFonts.poppins(
+                      '${widget.report.flaggedClauses.length}',
+                      style:
+                      GoogleFonts.poppins(
                         fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: VistaraColors.ochreAmber,
+                        fontWeight:
+                        FontWeight.w700,
+                        color:
+                        VistaraColors
+                            .ochreAmber,
                       ),
                     ),
                   ),
@@ -131,25 +286,32 @@ class ReportScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              if (report.flaggedClauses.isEmpty)
+              if (widget.report.flaggedClauses.isEmpty)
                 _buildNoRisks()
               else
-                ...report.flaggedClauses.asMap().entries.map(
+                ...widget.report.flaggedClauses
+                    .asMap()
+                    .entries
+                    .map(
                       (entry) {
                     return Padding(
-                      padding: const EdgeInsets.only(
+                      padding:
+                      const EdgeInsets.only(
                         bottom: 12,
                       ),
+
                       child: _RiskCard(
                         index: entry.key,
                         risk: entry.value,
+
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => RiskDetailScreen(
-                                risk: entry.value,
-                              ),
+                              builder: (_) =>
+                                  RiskDetailScreen(
+                                    risk: entry.value,
+                                  ),
                             ),
                           );
                         },
@@ -160,17 +322,89 @@ class ReportScreen extends StatelessWidget {
 
               const SizedBox(height: 8),
 
+              // ----------------------------------------------------
+              // DISCLAIMER
+              // ----------------------------------------------------
+
               _buildDisclaimer(),
             ],
           ),
         ),
       ),
 
+      // --------------------------------------------------------------
+      // BOTTOM NAVIGATION
+      // --------------------------------------------------------------
+
       bottomNavigationBar: VistaraBottomNav(
         currentIndex: 1,
         onDestinationSelected: (index) {
-          _goToMainTab(context, index);
+          _goToMainTab(
+            context,
+            index,
+          );
         },
+      ),
+    );
+  }
+
+  // ================================================================
+  // SAVE REPORT BUTTON
+  // ================================================================
+
+  Widget _buildSaveReportButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+
+      child: OutlinedButton.icon(
+        onPressed:
+        _isSaving ? null : _saveReport,
+
+        icon: _isSaving
+            ? const SizedBox(
+          width: 18,
+          height: 18,
+          child:
+          CircularProgressIndicator(
+            strokeWidth: 2,
+          ),
+        )
+            : const Icon(
+          Icons.save_alt_rounded,
+        ),
+
+        label: Text(
+          _isSaving
+              ? 'Saving Report...'
+              : 'Save Report',
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+
+        style:
+        OutlinedButton.styleFrom(
+          foregroundColor:
+          VistaraColors.plumCharcoal,
+
+          side: BorderSide(
+            color: VistaraColors
+                .plumCharcoal
+                .withValues(
+              alpha: 0.20,
+            ),
+          ),
+
+          shape:
+          RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.circular(
+              15,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -180,41 +414,62 @@ class ReportScreen extends StatelessWidget {
   // ================================================================
 
   Widget _buildScoreCard() {
-    final scoreColor = _scoreColor(report.overallScore);
+    final scoreColor =
+    _scoreColor(
+      widget.report.overallScore,
+    );
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+
+      padding:
+      const EdgeInsets.all(20),
+
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+
+        borderRadius:
+        BorderRadius.circular(24),
+
         border: Border.all(
-          color: VistaraColors.lavenderGray.withValues(
+          color: VistaraColors
+              .lavenderGray
+              .withValues(
             alpha: 0.18,
           ),
         ),
       ),
+
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
+
         children: [
           Text(
             'Contract Risk Report',
             style: GoogleFonts.poppins(
               fontSize: 19,
-              fontWeight: FontWeight.w700,
-              color: VistaraColors.plumCharcoal,
+              fontWeight:
+              FontWeight.w700,
+              color:
+              VistaraColors
+                  .plumCharcoal,
             ),
           ),
 
           const SizedBox(height: 4),
 
           Text(
-            report.filename,
+            widget.report.filename,
             maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.poppins(
+            overflow:
+            TextOverflow.ellipsis,
+            style:
+            GoogleFonts.poppins(
               fontSize: 10,
-              color: VistaraColors.mutedText,
+              color:
+              VistaraColors
+                  .mutedText,
             ),
           ),
 
@@ -225,41 +480,77 @@ class ReportScreen extends StatelessWidget {
               SizedBox(
                 width: 112,
                 height: 112,
+
                 child: Stack(
-                  alignment: Alignment.center,
+                  alignment:
+                  Alignment.center,
+
                   children: [
                     SizedBox(
                       width: 112,
                       height: 112,
-                      child: CircularProgressIndicator(
-                        value: report.overallScore / 100,
+
+                      child:
+                      CircularProgressIndicator(
+                        value: (
+                            widget
+                                .report
+                                .overallScore
+                                .clamp(
+                              0,
+                              100,
+                            ) /
+                                100
+                        ),
+
                         strokeWidth: 9,
+
                         backgroundColor:
-                        VistaraColors.lavenderGray
-                            .withValues(alpha: 0.18),
+                        VistaraColors
+                            .lavenderGray
+                            .withValues(
+                          alpha: 0.18,
+                        ),
+
                         valueColor:
-                        AlwaysStoppedAnimation<Color>(
+                        AlwaysStoppedAnimation<
+                            Color>(
                           scoreColor,
                         ),
                       ),
                     ),
 
                     Column(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize:
+                      MainAxisSize.min,
+
                       children: [
                         Text(
-                          '${report.overallScore}',
-                          style: GoogleFonts.poppins(
+                          '${widget.report.overallScore}',
+
+                          style:
+                          GoogleFonts
+                              .poppins(
                             fontSize: 29,
-                            fontWeight: FontWeight.w700,
-                            color: VistaraColors.plumCharcoal,
+                            fontWeight:
+                            FontWeight
+                                .w700,
+                            color:
+                            VistaraColors
+                                .plumCharcoal,
                           ),
                         ),
+
                         Text(
                           '/100',
-                          style: GoogleFonts.poppins(
+
+                          style:
+                          GoogleFonts
+                              .poppins(
                             fontSize: 9,
-                            color: VistaraColors.mutedText,
+                            color:
+                            VistaraColors
+                                .mutedText,
                           ),
                         ),
                       ],
@@ -272,25 +563,36 @@ class ReportScreen extends StatelessWidget {
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+
                   children: [
                     Text(
                       'Overall Risk',
-                      style: GoogleFonts.poppins(
+
+                      style:
+                      GoogleFonts.poppins(
                         fontSize: 10,
-                        color: VistaraColors.mutedText,
+                        color:
+                        VistaraColors
+                            .mutedText,
                       ),
                     ),
 
                     const SizedBox(height: 3),
 
                     Text(
-                      report.riskLevel,
-                      style: GoogleFonts.poppins(
+                      widget.report.riskLevel,
+
+                      style:
+                      GoogleFonts.poppins(
                         fontSize: 23,
-                        fontWeight: FontWeight.w700,
-                        color: _riskLevelColor(
-                          report.riskLevel,
+                        fontWeight:
+                        FontWeight.w700,
+                        color:
+                        _riskLevelColor(
+                          widget.report
+                              .riskLevel,
                         ),
                       ),
                     ),
@@ -299,12 +601,17 @@ class ReportScreen extends StatelessWidget {
 
                     Text(
                       _scoreDescription(
-                        report.overallScore,
+                        widget.report
+                            .overallScore,
                       ),
-                      style: GoogleFonts.poppins(
+
+                      style:
+                      GoogleFonts.poppins(
                         fontSize: 10,
                         height: 1.45,
-                        color: VistaraColors.mutedText,
+                        color:
+                        VistaraColors
+                            .mutedText,
                       ),
                     ),
                   ],
@@ -326,9 +633,11 @@ class ReportScreen extends StatelessWidget {
       children: [
         Expanded(
           child: _RiskCountCard(
-            count: report.highRiskCount,
+            count:
+            widget.report.highRiskCount,
             label: 'High Risk',
-            color: VistaraColors.highRisk,
+            color:
+            VistaraColors.highRisk,
           ),
         ),
 
@@ -336,9 +645,11 @@ class ReportScreen extends StatelessWidget {
 
         Expanded(
           child: _RiskCountCard(
-            count: report.mediumRiskCount,
+            count:
+            widget.report.mediumRiskCount,
             label: 'Medium',
-            color: VistaraColors.mediumRisk,
+            color:
+            VistaraColors.mediumRisk,
           ),
         ),
 
@@ -346,9 +657,11 @@ class ReportScreen extends StatelessWidget {
 
         Expanded(
           child: _RiskCountCard(
-            count: report.lowRiskCount,
+            count:
+            widget.report.lowRiskCount,
             label: 'Low',
-            color: VistaraColors.lowRisk,
+            color:
+            VistaraColors.lowRisk,
           ),
         ),
       ],
@@ -362,29 +675,45 @@ class ReportScreen extends StatelessWidget {
   Widget _buildDisclaimer() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
+
+      padding:
+      const EdgeInsets.all(15),
+
+      decoration:
+      BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius:
+        BorderRadius.circular(16),
       ),
+
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
+
         children: [
           const Icon(
             Icons.info_outline_rounded,
             size: 17,
-            color: VistaraColors.ochreAmber,
+            color:
+            VistaraColors
+                .ochreAmber,
           ),
 
           const SizedBox(width: 8),
 
           Expanded(
             child: Text(
-              'Vistara provides AI-powered contract risk analysis for awareness. It is not legal advice.',
-              style: GoogleFonts.poppins(
+              'Vistara provides AI-powered '
+                  'contract risk analysis for '
+                  'awareness. It is not legal advice.',
+
+              style:
+              GoogleFonts.poppins(
                 fontSize: 9,
                 height: 1.5,
-                color: VistaraColors.mutedText,
+                color:
+                VistaraColors
+                    .mutedText,
               ),
             ),
           ),
@@ -400,16 +729,24 @@ class ReportScreen extends StatelessWidget {
   Widget _buildNoRisks() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
+
+      padding:
+      const EdgeInsets.all(28),
+
+      decoration:
+      BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius:
+        BorderRadius.circular(18),
       ),
+
       child: Column(
         children: [
           const Icon(
-            Icons.check_circle_outline_rounded,
-            color: VistaraColors.lowRisk,
+            Icons
+                .check_circle_outline_rounded,
+            color:
+            VistaraColors.lowRisk,
             size: 42,
           ),
 
@@ -417,10 +754,15 @@ class ReportScreen extends StatelessWidget {
 
           Text(
             'No significant risks detected',
-            style: GoogleFonts.poppins(
+
+            style:
+            GoogleFonts.poppins(
               fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: VistaraColors.plumCharcoal,
+              fontWeight:
+              FontWeight.w600,
+              color:
+              VistaraColors
+                  .plumCharcoal,
             ),
           ),
         ],
@@ -438,11 +780,14 @@ class ReportScreen extends StatelessWidget {
       ) {
     Navigator.pushAndRemoveUntil(
       context,
+
       MaterialPageRoute(
-        builder: (_) => MainNavigation(
-          initialIndex: index,
-        ),
+        builder: (_) =>
+            MainNavigation(
+              initialIndex: index,
+            ),
       ),
+
           (route) => false,
     );
   }
@@ -451,7 +796,9 @@ class ReportScreen extends StatelessWidget {
   // HELPERS
   // ================================================================
 
-  String _displayFilename(String filename) {
+  String _displayFilename(
+      String filename,
+      ) {
     if (filename.length <= 23) {
       return filename;
     }
@@ -459,7 +806,9 @@ class ReportScreen extends StatelessWidget {
     return '${filename.substring(0, 20)}...';
   }
 
-  Color _scoreColor(int score) {
+  Color _scoreColor(
+      int score,
+      ) {
     if (score <= 40) {
       return VistaraColors.highRisk;
     }
@@ -471,8 +820,11 @@ class ReportScreen extends StatelessWidget {
     return VistaraColors.lowRisk;
   }
 
-  Color _riskLevelColor(String level) {
-    switch (level.toLowerCase()) {
+  Color _riskLevelColor(
+      String level,
+      ) {
+    switch (
+    level.toLowerCase()) {
       case 'high':
         return VistaraColors.highRisk;
 
@@ -487,7 +839,9 @@ class ReportScreen extends StatelessWidget {
     }
   }
 
-  String _scoreDescription(int score) {
+  String _scoreDescription(
+      int score,
+      ) {
     if (score <= 40) {
       return 'Requires immediate attention.';
     }
@@ -504,7 +858,8 @@ class ReportScreen extends StatelessWidget {
 // RISK COUNT CARD
 // ====================================================================
 
-class _RiskCountCard extends StatelessWidget {
+class _RiskCountCard
+    extends StatelessWidget {
   final int count;
   final String label;
   final Color color;
@@ -516,26 +871,44 @@ class _RiskCountCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+      BuildContext context,
+      ) {
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding:
+      const EdgeInsets.symmetric(
         vertical: 13,
         horizontal: 6,
       ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(14),
+
+      decoration:
+      BoxDecoration(
+        color:
+        color.withValues(
+          alpha: 0.08,
+        ),
+
+        borderRadius:
+        BorderRadius.circular(14),
+
         border: Border.all(
-          color: color.withValues(alpha: 0.14),
+          color:
+          color.withValues(
+            alpha: 0.14,
+          ),
         ),
       ),
+
       child: Column(
         children: [
           Text(
             '$count',
-            style: GoogleFonts.poppins(
+
+            style:
+            GoogleFonts.poppins(
               fontSize: 21,
-              fontWeight: FontWeight.w700,
+              fontWeight:
+              FontWeight.w700,
               color: color,
             ),
           ),
@@ -544,10 +917,15 @@ class _RiskCountCard extends StatelessWidget {
 
           Text(
             label,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+
+            textAlign:
+            TextAlign.center,
+
+            style:
+            GoogleFonts.poppins(
               fontSize: 8,
-              fontWeight: FontWeight.w600,
+              fontWeight:
+              FontWeight.w600,
               color: color,
             ),
           ),
@@ -561,7 +939,8 @@ class _RiskCountCard extends StatelessWidget {
 // RISK CARD
 // ====================================================================
 
-class _RiskCard extends StatelessWidget {
+class _RiskCard
+    extends StatelessWidget {
   final int index;
   final ClauseRisk risk;
   final VoidCallback onTap;
@@ -573,45 +952,82 @@ class _RiskCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final color = VistaraColors.riskColor(
+  Widget build(
+      BuildContext context,
+      ) {
+    final color =
+    VistaraColors.riskColor(
       risk.severity,
     );
 
     return Material(
       color: Colors.transparent,
+
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
+
+        borderRadius:
+        BorderRadius.circular(18),
+
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
+
+          padding:
+          const EdgeInsets.all(16),
+
+          decoration:
+          BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
+
+            borderRadius:
+            BorderRadius.circular(
+              18,
+            ),
+
             border: Border.all(
-              color: color.withValues(alpha: 0.15),
+              color:
+              color.withValues(
+                alpha: 0.15,
+              ),
             ),
           ),
+
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
+
             children: [
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
+                    padding:
+                    const EdgeInsets
+                        .symmetric(
                       horizontal: 8,
                       vertical: 4,
                     ),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(20),
+
+                    decoration:
+                    BoxDecoration(
+                      color:
+                      color.withValues(
+                        alpha: 0.10,
+                      ),
+
+                      borderRadius:
+                      BorderRadius.circular(
+                        20,
+                      ),
                     ),
+
                     child: Text(
                       risk.severity,
-                      style: GoogleFonts.poppins(
+
+                      style:
+                      GoogleFonts.poppins(
                         fontSize: 8,
-                        fontWeight: FontWeight.w700,
+                        fontWeight:
+                        FontWeight.w700,
                         color: color,
                       ),
                     ),
@@ -621,10 +1037,15 @@ class _RiskCard extends StatelessWidget {
 
                   Text(
                     '${index + 1}',
-                    style: GoogleFonts.poppins(
+
+                    style:
+                    GoogleFonts.poppins(
                       fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                      color: VistaraColors.neutral,
+                      fontWeight:
+                      FontWeight.w600,
+                      color:
+                      VistaraColors
+                          .neutral,
                     ),
                   ),
                 ],
@@ -634,10 +1055,15 @@ class _RiskCard extends StatelessWidget {
 
               Text(
                 risk.category,
-                style: GoogleFonts.poppins(
+
+                style:
+                GoogleFonts.poppins(
                   fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: VistaraColors.plumCharcoal,
+                  fontWeight:
+                  FontWeight.w700,
+                  color:
+                  VistaraColors
+                      .plumCharcoal,
                 ),
               ),
 
@@ -645,12 +1071,19 @@ class _RiskCard extends StatelessWidget {
 
               Text(
                 risk.plainExplanation,
+
                 maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
+
+                overflow:
+                TextOverflow.ellipsis,
+
+                style:
+                GoogleFonts.poppins(
                   fontSize: 10.5,
                   height: 1.45,
-                  color: VistaraColors.mutedText,
+                  color:
+                  VistaraColors
+                      .mutedText,
                 ),
               ),
 
@@ -660,19 +1093,27 @@ class _RiskCard extends StatelessWidget {
                 children: [
                   Text(
                     'View details',
-                    style: GoogleFonts.poppins(
+
+                    style:
+                    GoogleFonts.poppins(
                       fontSize: 9.5,
-                      fontWeight: FontWeight.w600,
-                      color: VistaraColors.ochreAmber,
+                      fontWeight:
+                      FontWeight.w600,
+                      color:
+                      VistaraColors
+                          .ochreAmber,
                     ),
                   ),
 
                   const SizedBox(width: 4),
 
                   const Icon(
-                    Icons.arrow_forward_rounded,
+                    Icons
+                        .arrow_forward_rounded,
                     size: 13,
-                    color: VistaraColors.ochreAmber,
+                    color:
+                    VistaraColors
+                        .ochreAmber,
                   ),
                 ],
               ),
