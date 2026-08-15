@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/vistara_theme.dart';
-
+import 'analyze_screen.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -164,12 +164,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          // MainNavigation owns the actual
-                          // Analyze tab. This button is kept
-                          // visually consistent here.
-                          //
-                          // Navigation can be connected to
-                          // your existing tab controller.
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AnalyzeScreen(),
+                            ),
+                          );
                         },
                         child: Row(
                           mainAxisAlignment:
@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 8,
                             ),
                             Text(
-                              'Analyze a Contract',
+                              'Getting started',
                               style: GoogleFonts
                                   .poppins(
                                 fontSize: 13,
