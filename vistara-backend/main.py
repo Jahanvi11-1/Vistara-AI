@@ -147,7 +147,7 @@ MOCK_REPORT = ContractReport(
                 "another 12-month lease, and owe a full year's rent even if you "
                 "need to move out."
             ),
-            evidence_verified=cd.,
+            evidence_verified=1.0,
             match_confidence=1.0,
             matched_page=1,
         ),
