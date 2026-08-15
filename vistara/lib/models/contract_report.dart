@@ -5,7 +5,7 @@ class ClauseRisk {
   final String plainExplanation;
   final String worstCaseScenario;
 
-  // Evidence verification fields returned by the backend.
+  // Evidence information returned by the backend.
   final bool evidenceVerified;
   final double matchConfidence;
   final int? matchedPage;
@@ -21,26 +21,35 @@ class ClauseRisk {
     this.matchedPage,
   });
 
-  factory ClauseRisk.fromJson(Map<String, dynamic> json) {
+  factory ClauseRisk.fromJson(
+      Map<String, dynamic> json,
+      ) {
     return ClauseRisk(
-      clauseText: json['clause_text'] as String,
-      severity: json['severity'] as String,
-      category: json['category'] as String,
-      plainExplanation: json['plain_explanation'] as String,
-      worstCaseScenario: json['worst_case_scenario'] as String,
+      clauseText:
+      json['clause_text']?.toString() ?? '',
 
-      // Backend verification data.
-      //
-      // Defaults are included so older/mock responses do not crash
-      // the Flutter app if these fields are temporarily missing.
+      severity:
+      json['severity']?.toString() ?? 'Low',
+
+      category:
+      json['category']?.toString() ?? '',
+
+      plainExplanation:
+      json['plain_explanation']?.toString() ?? '',
+
+      worstCaseScenario:
+      json['worst_case_scenario']?.toString() ?? '',
+
       evidenceVerified:
-      json['evidence_verified'] as bool? ?? false,
+      json['evidence_verified'] == true,
 
       matchConfidence:
-      (json['match_confidence'] as num?)?.toDouble() ?? 0.0,
+      (json['match_confidence'] as num?)
+          ?.toDouble() ??
+          0.0,
 
       matchedPage:
-      json['matched_page'] as int?,
+      (json['matched_page'] as num?)?.toInt(),
     );
   }
 
@@ -51,8 +60,6 @@ class ClauseRisk {
       'category': category,
       'plain_explanation': plainExplanation,
       'worst_case_scenario': worstCaseScenario,
-
-      // Evidence verification data.
       'evidence_verified': evidenceVerified,
       'match_confidence': matchConfidence,
       'matched_page': matchedPage,
@@ -79,22 +86,55 @@ class ContractReport {
     required this.flaggedClauses,
   });
 
-  factory ContractReport.fromJson(Map<String, dynamic> json) {
+  factory ContractReport.fromJson(
+      Map<String, dynamic> json,
+      ) {
+    final rawClauses =
+    json['flagged_clauses'];
+
     return ContractReport(
-      filename: json['filename'] as String,
-      overallScore: json['overall_score'] as int,
-      riskLevel: json['risk_level'] as String,
-      highRiskCount: json['high_risk_count'] as int,
-      mediumRiskCount: json['medium_risk_count'] as int,
-      lowRiskCount: json['low_risk_count'] as int,
+      filename:
+      json['filename']?.toString() ??
+          'Unknown Contract',
+
+      overallScore:
+      (json['overall_score'] as num?)
+          ?.toInt() ??
+          0,
+
+      riskLevel:
+      json['risk_level']?.toString() ??
+          'Low',
+
+      highRiskCount:
+      (json['high_risk_count'] as num?)
+          ?.toInt() ??
+          0,
+
+      mediumRiskCount:
+      (json['medium_risk_count'] as num?)
+          ?.toInt() ??
+          0,
+
+      lowRiskCount:
+      (json['low_risk_count'] as num?)
+          ?.toInt() ??
+          0,
+
       flaggedClauses:
-      (json['flagged_clauses'] as List<dynamic>)
+      rawClauses is List
+          ? rawClauses
+          .whereType<Map>()
           .map(
-            (clause) => ClauseRisk.fromJson(
-          clause as Map<String, dynamic>,
-        ),
+            (clause) =>
+            ClauseRisk.fromJson(
+              Map<String, dynamic>.from(
+                clause,
+              ),
+            ),
       )
-          .toList(),
+          .toList()
+          : <ClauseRisk>[],
     );
   }
 
@@ -108,7 +148,10 @@ class ContractReport {
       'low_risk_count': lowRiskCount,
       'flagged_clauses':
       flaggedClauses
-          .map((clause) => clause.toJson())
+          .map(
+            (clause) =>
+            clause.toJson(),
+      )
           .toList(),
     };
   }
