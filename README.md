@@ -241,3 +241,5 @@ flutter build web
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
 - [Gemini API Documentation](https://ai.google.dev/gemini-api/docs)
 - [Google AI Studio](https://aistudio.google.com/)
+
+[![Architecture diagram of jahanvi11-1/vistara-ai](https://gitdiagram.com/jahanvi11-1/vistara-ai/diagram.png)](https://gitdiagram.com/jahanvi11-1/vistara-ai?utm_source=readme&utm_medium=picture)
