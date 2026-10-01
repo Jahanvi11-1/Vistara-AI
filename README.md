@@ -243,3 +243,9 @@ flutter build web
 - [Google AI Studio](https://aistudio.google.com/)
 
 [![Architecture diagram of jahanvi11-1/vistara-ai](https://gitdiagram.com/jahanvi11-1/vistara-ai/diagram.png)](https://gitdiagram.com/jahanvi11-1/vistara-ai?utm_source=readme&utm_medium=picture)
+
+[![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/jahanvi11-1/vistara-ai?utm_source=readme&utm_medium=badge)
+
+<img width="6573" height="7435" alt="diagram" src="https://github.com/user-attachments/assets/bb7c072d-79cc-42fa-9b6c-323d9d1a89ba" />
+
+
