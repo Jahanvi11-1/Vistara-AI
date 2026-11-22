@@ -4,3 +4,6 @@ google-genai
 pdfplumber
 python-multipart
 python-dotenv
+pytesseract 
+asyncio     
+pillow

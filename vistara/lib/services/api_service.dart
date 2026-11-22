@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,6 +29,7 @@ class ApiService {
     String? filename,
     String? text,
     bool isMock = false,
+    bool redactPii = true,
   }) async {
     if (fileBytes == null &&
         (text == null || text.trim().isEmpty)) {
@@ -39,7 +39,7 @@ class ApiService {
     }
 
     final uri = Uri.parse(
-      '$baseUrl/analyze?mock=$isMock',
+      '$baseUrl/analyze?mock=$isMock&redact_pii=$redactPii',
     );
 
     final request = http.MultipartRequest(
@@ -77,6 +77,7 @@ class ApiService {
       debugPrint('File bytes: ${fileBytes?.length ?? 0}');
       debugPrint('Has text: ${text != null && text.trim().isNotEmpty}');
       debugPrint('Mock: $isMock');
+      debugPrint('Redact PII: $redactPii');
       debugPrint('========================================');
 
       // ==========================================================
@@ -123,8 +124,7 @@ class ApiService {
       // BACKEND ERROR
       // ==========================================================
 
-      String errorMessage =
-          'Failed to analyze contract.';
+      String errorMessage = 'Failed to analyze contract.';
 
       try {
         final decoded = jsonDecode(response.body);

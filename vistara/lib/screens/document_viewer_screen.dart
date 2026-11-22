@@ -8,6 +8,7 @@ import 'package:pdfrx/pdfrx.dart';
 import '../models/contract_report.dart';
 import '../theme/vistara_theme.dart';
 import 'report_screen.dart';
+
 class DocumentViewerScreen extends StatefulWidget {
   final Uint8List fileBytes;
   final String filename;
@@ -34,6 +35,7 @@ class _DocumentViewerScreenState
   final Set<int> _pagesBeingProcessed = {};
 
   bool _highlightProcessingStarted = false;
+  bool _showPiiRedaction = true;
 
   @override
   void initState() {
@@ -208,6 +210,9 @@ class _DocumentViewerScreenState
     );
     debugPrint(
       'Low: ${widget.report.lowRiskCount}',
+    );
+    debugPrint(
+      'PII Boxes: ${widget.report.redactionSummary.piiBoxes.length}',
     );
     debugPrint(
       '========================================',
@@ -997,7 +1002,7 @@ class _DocumentViewerScreenState
   }
 
   // ===========================================================================
-  // PAINT HIGHLIGHTS
+  // PAINT HIGHLIGHTS & PII BLACKOUT BARS
   // ===========================================================================
 
   void _paintClauseHighlights(
@@ -1010,41 +1015,81 @@ class _DocumentViewerScreenState
     _highlightsByPage[
     page.pageNumber];
 
-    if (pageHighlights == null ||
-        pageHighlights.isEmpty) {
-      return;
+    if (pageHighlights != null &&
+        pageHighlights.isNotEmpty) {
+      for (final _ClauseHighlight highlight
+      in pageHighlights) {
+        final Rect rect =
+        highlight.bounds.toRect(
+          page: page,
+          scaledPageSize: pageRect.size,
+        );
+
+        final Rect translatedRect =
+        rect.translate(
+          pageRect.left,
+          pageRect.top,
+        );
+
+        final ui.Paint paint =
+        ui.Paint()
+          ..color =
+          _highlightColor(
+            highlight.clause.severity,
+          )
+          ..style =
+              ui.PaintingStyle.fill;
+
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            translatedRect,
+            const Radius.circular(2),
+          ),
+          paint,
+        );
+      }
     }
 
-    for (final _ClauseHighlight highlight
-    in pageHighlights) {
-      final Rect rect =
-      highlight.bounds.toRect(
-        page: page,
-        scaledPageSize: pageRect.size,
-      );
+    // -------------------------------------------------------------------------
+    // PAINT SOLID BLACK REDACTION BARS OVER PII (Vistara Extract Spatial PII)
+    // -------------------------------------------------------------------------
+    if (_showPiiRedaction) {
+      final List<BoundingBox> piiBoxesForPage =
+      widget.report.redactionSummary.piiBoxes
+          .where((box) => box.page == page.pageNumber)
+          .toList();
 
-      final Rect translatedRect =
-      rect.translate(
-        pageRect.left,
-        pageRect.top,
-      );
+      if (piiBoxesForPage.isNotEmpty) {
+        final ui.Paint redactionPaint =
+        ui.Paint()
+          ..color = Colors.black
+          ..style = ui.PaintingStyle.fill;
 
-      final ui.Paint paint =
-      ui.Paint()
-        ..color =
-        _highlightColor(
-          highlight.clause.severity,
-        )
-        ..style =
-            ui.PaintingStyle.fill;
+        for (final BoundingBox box in piiBoxesForPage) {
+          final double scaleX = pageRect.width / box.pageWidth;
+          final double scaleY = pageRect.height / box.pageHeight;
 
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          translatedRect,
-          const Radius.circular(2),
-        ),
-        paint,
-      );
+          final double left = pageRect.left + (box.x0 * scaleX) - 2.0;
+          final double top = pageRect.top + (box.top * scaleY) - 2.0;
+          final double width = ((box.x1 - box.x0) * scaleX) + 4.0;
+          final double height = ((box.bottom - box.top) * scaleY) + 4.0;
+
+          final Rect redactionRect = Rect.fromLTWH(
+            left,
+            top,
+            width,
+            height,
+          );
+
+          canvas.drawRRect(
+            RRect.fromRectAndRadius(
+              redactionRect,
+              const Radius.circular(2),
+            ),
+            redactionPaint,
+          );
+        }
+      }
     }
   }
 
@@ -1088,6 +1133,9 @@ class _DocumentViewerScreenState
   // ===========================================================================
 
   Widget _buildHeader() {
+    final bool hasPiiBoxes =
+        widget.report.redactionSummary.piiBoxes.isNotEmpty;
+
     return Container(
       padding:
       const EdgeInsets.fromLTRB(
@@ -1160,6 +1208,25 @@ class _DocumentViewerScreenState
               ],
             ),
           ),
+
+          if (hasPiiBoxes)
+            IconButton(
+              tooltip: _showPiiRedaction
+                  ? 'Hide PII Redaction'
+                  : 'Show PII Redaction',
+              onPressed: () {
+                setState(() {
+                  _showPiiRedaction = !_showPiiRedaction;
+                });
+                _pdfController.invalidate();
+              },
+              icon: Icon(
+                _showPiiRedaction
+                    ? Icons.visibility_off_rounded
+                    : Icons.visibility_rounded,
+              ),
+              color: VistaraColors.plumCharcoal,
+            ),
 
           IconButton(
             onPressed: () {
