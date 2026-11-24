@@ -27,14 +27,18 @@ class ApiService {
   Future<Map<String, dynamic>> analyzeContract({
     Uint8List? fileBytes,
     String? filename,
+    List<({Uint8List bytes, String name})>? imageFiles,
     String? text,
     bool isMock = false,
     bool redactPii = true,
   }) async {
-    if (fileBytes == null &&
-        (text == null || text.trim().isEmpty)) {
+    final hasFile = fileBytes != null;
+    final hasImages = imageFiles != null && imageFiles.isNotEmpty;
+    final hasText = text != null && text.trim().isNotEmpty;
+
+    if (!hasFile && !hasImages && !hasText) {
       throw Exception(
-        'Please upload a document or enter contract text.',
+        'Please upload a document, image(s), or enter contract text.',
       );
     }
 
@@ -51,7 +55,7 @@ class ApiService {
     // PDF / FILE
     // ============================================================
 
-    if (fileBytes != null) {
+    if (hasFile) {
       request.files.add(
         http.MultipartFile.fromBytes(
           'file',
@@ -62,11 +66,28 @@ class ApiService {
     }
 
     // ============================================================
+    // IMAGES
+    // ============================================================
+
+    if (hasImages) {
+      for (final img in imageFiles) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'images',
+            img.bytes,
+            filename: img.name,
+          ),
+        );
+      }
+    }
+
+    // ============================================================
     // TEXT
     // ============================================================
 
-    if (text != null && text.trim().isNotEmpty) {
-      request.fields['text'] = text.trim();
+    if (hasText) {
+      // ignore: unnecessary_non_null_assertion
+      request.fields['text'] = text!.trim();
     }
 
     try {
@@ -75,7 +96,8 @@ class ApiService {
       debugPrint('URL: $uri');
       debugPrint('File: ${filename ?? "none"}');
       debugPrint('File bytes: ${fileBytes?.length ?? 0}');
-      debugPrint('Has text: ${text != null && text.trim().isNotEmpty}');
+      debugPrint('Images: ${imageFiles?.length ?? 0}');
+      debugPrint('Has text: $hasText');
       debugPrint('Mock: $isMock');
       debugPrint('Redact PII: $redactPii');
       debugPrint('========================================');

@@ -242,6 +242,16 @@ class ReportStorageService {
               report.filename,
             ),
 
+            pw.SizedBox(height: 4),
+
+            pw.Text(
+              _extractionMethodLabel(report.extractionMethod),
+              style: const pw.TextStyle(
+                fontSize: 9,
+                color: PdfColors.grey600,
+              ),
+            ),
+
             pw.SizedBox(height: 18),
 
             pw.Container(
@@ -510,6 +520,24 @@ class ReportStorageService {
       '_',
     )
         .trim();
+  }
+
+  // ===========================================================================
+  // EXTRACTION METHOD LABEL
+  // ===========================================================================
+
+  String _extractionMethodLabel(String method) {
+    switch (method) {
+      case 'hybrid_ocr':
+        return 'Source: Scanned PDF (OCR)';
+      case 'image_ocr':
+        return 'Source: Image(s) with OCR';
+      case 'raw_text':
+        return 'Source: Pasted text';
+      case 'native_pdf':
+      default:
+        return 'Source: PDF (native text)';
+    }
   }
 }
 

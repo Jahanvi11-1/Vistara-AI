@@ -3,6 +3,7 @@ import json
 import os
 import re
 import asyncio
+import tempfile
 import traceback
 from difflib import SequenceMatcher
 from enum import Enum
@@ -14,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
 import pdfplumber
+from PIL import Image
 from pydantic import BaseModel, Field
 import pytesseract
 
@@ -95,7 +97,7 @@ class ContractReport(BaseModel):
     high_risk_count: int
     medium_risk_count: int
     low_risk_count: int
-    extraction_method: str = "native_pdf"  # "native_pdf", "hybrid_ocr", or "raw_text"
+    extraction_method: str = "native_pdf"  # "native_pdf", "hybrid_ocr", "raw_text", or "image_ocr"
     redaction_summary: RedactionSummary = RedactionSummary()
     flagged_clauses: List[ClauseRisk]
 
@@ -291,6 +293,145 @@ def combine_pages(pages: List[ExtractedPage]) -> str:
 
 def extract_text_input(text: str) -> List[ExtractedPage]:
     return [ExtractedPage(page_number=1, text=text.strip())]
+
+
+# ============================================================================
+# MODULE 2B: IMAGE OCR EXTRACTION
+# ============================================================================
+
+ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
+ALLOWED_IMAGE_MIMETYPES = {"image/jpeg", "image/png", "image/webp"}
+MAX_IMAGE_BYTES = 20 * 1024 * 1024  # 20 MB per image
+MAX_IMAGE_DIMENSION = 8000          # pixels per side
+MIN_IMAGE_DIMENSION = 10            # pixels per side
+
+
+def validate_image(
+    file_bytes: bytes,
+    filename: str,
+    content_type: Optional[str],
+) -> None:
+    """
+    Validates image file size, extension, MIME type, and dimensions.
+    Raises HTTPException on failure.
+    """
+    ext = os.path.splitext(filename.lower())[1]
+    if ext not in ALLOWED_IMAGE_EXTENSIONS:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unsupported image format '{ext}'. Allowed: JPG, JPEG, PNG, WEBP.",
+        )
+
+    if content_type and content_type.lower() not in ALLOWED_IMAGE_MIMETYPES:
+        # Also allow content_type starting with image/ as a lenient check
+        if not content_type.lower().startswith("image/"):
+            raise HTTPException(
+                status_code=422,
+                detail=f"Invalid MIME type '{content_type}' for image upload.",
+            )
+
+    if len(file_bytes) > MAX_IMAGE_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Image '{filename}' exceeds the 20 MB size limit.",
+        )
+
+    if len(file_bytes) == 0:
+        raise HTTPException(status_code=422, detail=f"Image '{filename}' is empty.")
+
+    try:
+        with Image.open(io.BytesIO(file_bytes)) as img:
+            w, h = img.size
+            if w < MIN_IMAGE_DIMENSION or h < MIN_IMAGE_DIMENSION:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Image '{filename}' is too small ({w}×{h} px).",
+                )
+            if w > MAX_IMAGE_DIMENSION or h > MAX_IMAGE_DIMENSION:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Image '{filename}' is too large ({w}×{h} px). Max dimension is {MAX_IMAGE_DIMENSION}px.",
+                )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Could not read image '{filename}': {e}",
+        )
+
+
+def ocr_image_bytes(file_bytes: bytes, filename: str, page_number: int) -> ExtractedPage:
+    """
+    Runs Tesseract OCR on a single image and returns an ExtractedPage.
+    Returns the page with a warning note in text if OCR fails rather than
+    raising, so the caller can decide to report the limitation instead of
+    silently skipping or hallucinating.
+    """
+    standard_width = 595.0
+    standard_height = 842.0
+
+    try:
+        with Image.open(io.BytesIO(file_bytes)) as img:
+            width, height = float(img.size[0]), float(img.size[1])
+            # Convert to RGB for Tesseract compatibility (handles WEBP RGBA, etc.)
+            rgb_img = img.convert("RGB")
+
+        ocr_text = pytesseract.image_to_string(rgb_img).strip()
+
+        if not ocr_text:
+            # OCR ran but produced no text — image may be blank/decorative
+            warning = (
+                f"[WARNING: Image '{filename}' (page {page_number}) yielded no readable text. "
+                "It may be blank, decorative, or too low resolution for OCR.]"
+            )
+            print(f"⚠️ {warning}")
+            return ExtractedPage(
+                page_number=page_number,
+                text=warning,
+                width=width,
+                height=height,
+                used_ocr=True,
+            )
+
+        return ExtractedPage(
+            page_number=page_number,
+            text=ocr_text,
+            width=width,
+            height=height,
+            used_ocr=True,
+        )
+
+    except Exception as e:
+        warning = (
+            f"[WARNING: OCR failed for image '{filename}' (page {page_number}): {e}. "
+            "The image may be blurry, rotated, or corrupted.]"
+        )
+        print(f"⚠️ {warning}")
+        return ExtractedPage(
+            page_number=page_number,
+            text=warning,
+            width=standard_width,
+            height=standard_height,
+            used_ocr=True,
+        )
+
+
+def extract_image_pages(
+    image_files: List[tuple[bytes, str, Optional[str]]],
+) -> tuple[List[ExtractedPage], str]:
+    """
+    Validates and OCR-processes a list of (file_bytes, filename, content_type) tuples.
+    Returns extracted pages in order, plus extraction_method="image_ocr".
+    """
+    pages: List[ExtractedPage] = []
+
+    for index, (file_bytes, filename, content_type) in enumerate(image_files, start=1):
+        validate_image(file_bytes, filename, content_type)
+        page = ocr_image_bytes(file_bytes, filename, index)
+        pages.append(page)
+
+    return pages, "image_ocr"
 
 
 # ============================================================================
@@ -663,12 +804,18 @@ async def analyze_contract(
     mock: bool = Query(False),
     redact_pii: bool = Query(True),  # Toggleable from Flutter UI
     file: Optional[UploadFile] = File(None),
+    images: Optional[List[UploadFile]] = File(None),
     text: Optional[str] = Form(None),
 ):
     filename = "contract.txt"
     contract_text = ""
     extracted_pages: List[ExtractedPage] = []
     extraction_method = "raw_text"
+
+    # ------------------------------------------------------------------
+    # INPUT ROUTING
+    # Priority: PDF file > images > text
+    # ------------------------------------------------------------------
 
     if file is not None:
         filename = file.filename or "upload.pdf"
@@ -682,11 +829,33 @@ async def analyze_contract(
         else:
             contract_text = file_bytes.decode("utf-8", errors="replace").strip()
             extracted_pages = extract_text_input(contract_text)
+
+    elif images and len(images) > 0:
+        # Filter out any None/empty entries FastAPI may inject
+        valid_images = [img for img in images if img is not None and img.filename]
+        if not valid_images:
+            raise HTTPException(status_code=422, detail="No valid image files provided.")
+
+        # Build filename from first image for the report
+        filename = valid_images[0].filename or "image_upload"
+
+        image_tuples: List[tuple[bytes, str, Optional[str]]] = []
+        for img_upload in valid_images:
+            img_bytes = await img_upload.read()
+            image_tuples.append((img_bytes, img_upload.filename or "image", img_upload.content_type))
+
+        extracted_pages, extraction_method = extract_image_pages(image_tuples)
+        contract_text = combine_pages(extracted_pages)
+
+        # Use a combined display name when multiple images are uploaded
+        if len(valid_images) > 1:
+            filename = f"{len(valid_images)} images"
+
     elif text:
         contract_text = text.strip()
         extracted_pages = extract_text_input(contract_text)
     else:
-        raise HTTPException(status_code=422, detail="Provide either a file or text.")
+        raise HTTPException(status_code=422, detail="Provide either a file, images, or text.")
 
     if not contract_text.strip():
         raise HTTPException(status_code=422, detail="Could not extract any readable text.")
