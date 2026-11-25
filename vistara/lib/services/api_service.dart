@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   // ============================================================
@@ -18,6 +19,26 @@ class ApiService {
     }
 
     return 'http://127.0.0.1:8000';
+  }
+
+  // ============================================================
+  // HELPERS
+  // ============================================================
+
+  /// Returns the correct [MediaType] for a given filename extension so that
+  /// multipart uploads send `image/jpeg` etc. instead of the default
+  /// `application/octet-stream`.
+  static MediaType _mediaTypeFromName(String name) {
+    final ext = name.toLowerCase().split('.').last;
+    const map = {
+      'jpg': 'jpeg',
+      'jpeg': 'jpeg',
+      'png': 'png',
+      'webp': 'webp',
+    };
+    final subtype = map[ext];
+    if (subtype == null) return MediaType('application', 'octet-stream');
+    return MediaType('image', subtype);
   }
 
   // ============================================================
@@ -76,6 +97,7 @@ class ApiService {
             'images',
             img.bytes,
             filename: img.name,
+            contentType: _mediaTypeFromName(img.name),
           ),
         );
       }

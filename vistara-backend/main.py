@@ -323,8 +323,12 @@ def validate_image(
         )
 
     if content_type and content_type.lower() not in ALLOWED_IMAGE_MIMETYPES:
-        # Also allow content_type starting with image/ as a lenient check
-        if not content_type.lower().startswith("image/"):
+        # Treat octet-stream as "unset" — the client did not specify a real MIME
+        # type (Flutter's http package defaults to this when contentType is not
+        # explicitly passed). The extension has already been validated above, so
+        # accept it rather than rejecting a valid image.
+        effective_ct = content_type.lower()
+        if effective_ct != "application/octet-stream" and not effective_ct.startswith("image/"):
             raise HTTPException(
                 status_code=422,
                 detail=f"Invalid MIME type '{content_type}' for image upload.",
